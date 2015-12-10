@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="JUMP"
+            name="JUMP Category">
+      </category>
+      <view
+            name="View Main"
+            icon="icons/Main.gif"
+            category="JUMP"
+            class="jump.views.main.ViewMain"
+            id="jump.views.main.ViewMain">
+      </view>
+      
+       <view
+            name="Database Configuration"
+            icon="icons/db.png"
+            category="JUMP"
+            class="jump.view.main.Databases"
+            id="jump.views.main.ViewDatabases">
+          
+      </view>
+      
+       <view
+            name="Themes"
+            icon="icons/Themes.gif"
+            category="JUMP"
+            class="jump.views.main.Themes"
+            id="jump.views.main.ViewThemes">
+      </view>
+       <view
+             class="jump.view.main.ViewMain"
+             id="jump.view.main.ViewMain"
+             name="New ViewPart">
+       </view>
+
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <view
+               ratio="0.5"
+               relative="org.eclipse.ui.views.ProblemView"
+               relationship="right"
+               id="jump.views.main.ViewMain">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="jump.view.main.Themes"
+            id="jump.view.main.Themes"
+            name="New EditorPart">
+      </editor>
+   </extension>
+
+</plugin>
