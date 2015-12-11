@@ -1,0 +1,1 @@
+https://eclipse.org/articles/Article-PDE-does-plugins/PDE-intro.html
