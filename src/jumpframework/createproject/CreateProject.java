@@ -58,7 +58,8 @@ public class CreateProject {
 	
 	
 	public static boolean createProject(String projectPath, String connection, String user, String pass){
-		
+		InputSteamToFileApp in = new InputSteamToFileApp();
+		in.extactFile(projectPath);
 		for(int i=0;i<DIR.length;i++){
 			 String path = projectPath+subProjectPath[i];
 			 System.out.println("This is projectPath-> " + path);
@@ -94,7 +95,8 @@ public class CreateProject {
 				}					
 			 }
 		 }	
-		
+		FileUtil.deleteFile(projectPath+"\\template.zip");
+		FileUtil.deleteDirectory(projectPath+"\\template");
 		createJdbc(projectPath,connection, user, pass);
 			
 		return true;

@@ -1,7 +1,11 @@
 package jumpframework.createproject;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+
+import org.apache.commons.io.FileUtils;
+
 import com.mysql.*;
 /**
  * Hello world!
@@ -21,6 +25,13 @@ public class App
 		for(int i=0;i<fl.length;i++){
 			String[] tmp = fl[i].getName().split("\\."); 
 			System.out.println(tmp[0]);
+		}
+		
+		try {
+			FileUtils.forceDelete(new File("C:\\Users\\56023_000\\Documents\\GitHub\\JumpFramework\\foo\\includes-new.jsp"));
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
 	}
     

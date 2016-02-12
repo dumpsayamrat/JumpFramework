@@ -61,6 +61,32 @@ public class FileUtil {
 		 return new File(path).isDirectory();
 		
 	 }
+
+	 /**
+	  * delete directory 
+	  * 
+	  * @param path target path for delete
+	  */
+	public static void deleteDirectory(String path) {
+		try {
+			FileUtils.forceDelete(new File(path));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	/**
+	 * delete file
+	 * @param path target file for delete
+	 */
+	public static void deleteFile(String path) {
+		new File(path).delete();
+		System.out.println(path+" deleted.");
+		
+	}
+
 	
 	
 	
