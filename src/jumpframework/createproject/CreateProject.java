@@ -1,8 +1,11 @@
 package jumpframework.createproject;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import org.apache.commons.lang3.text.WordUtils;
 
 public class CreateProject {
 	
@@ -32,7 +35,7 @@ public class CreateProject {
 		{},
 		{"log4j.xml","hibernate.cfg.xml"},
 		{"Theme"},
-		{"jdbc.properties", "web.xml", "jumpweb-servlet.xml"},
+		{"web.xml", "jumpweb-servlet.xml"},
 		{"includes.jsp", "index.jsp", "about.jsp", "contact.jsp"},
 		{"WelcomeController.java"}
 	};
@@ -54,7 +57,7 @@ public class CreateProject {
 	
 	
 	
-	public static boolean createProject(String projectPath){
+	public static boolean createProject(String projectPath, String connection, String user, String pass){
 		
 		for(int i=0;i<DIR.length;i++){
 			 String path = projectPath+subProjectPath[i];
@@ -90,10 +93,37 @@ public class CreateProject {
 					System.out.println(FILE[i][j]+" is exists.");
 				}					
 			 }
-		 }
+		 }	
 		
-		
+		createJdbc(projectPath,connection, user, pass);	
+			
+			
 		return true;
+		
+	}
+
+
+
+
+	private static void createJdbc(String projectPath, String connection, String user, String pass) {
+		FileUtil fu = new FileUtil();
+		File file = fu.createFile("jdbc", projectPath+"\\src\\main\\webapp\\WEB-INF\\", "properties");
+		
+		try {
+			FileWriter fw = new FileWriter(file);
+			
+			fw.write("jdbc.driverClassName=com.mysql.jdbc.Driver\n");
+			fw.write("jdbc.dialect=org.hibernate.dialect.MySQLDialect\n");
+			fw.write("jdbc.databaseurl="+connection+"\n");
+			fw.write("jdbc.username="+user+"\n");
+			fw.write("jdbc.password="+pass);
+			
+			fw.flush();
+			fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 }

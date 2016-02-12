@@ -149,7 +149,7 @@ public class JumpView extends ViewPart {
 						lblInfo.setText("Please select table.");
 					}
 					else{
-						if(CreateProject.createProject(txtLocation.getText())){
+						if(CreateProject.createProject(txtLocation.getText(),txtDatabase.getText(), txtUser.getText(), txtPass.getText() )){
 							
 							mysql = new MySQL(txtDatabase.getText(), txtUser.getText(), txtPass.getText());
 							if (mysql.getConnection()){
