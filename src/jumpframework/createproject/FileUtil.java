@@ -7,6 +7,11 @@ import org.apache.commons.io.FileUtils;
 
 public class FileUtil {
 	
+	/**
+	 * Creates the directory named.
+	 * @param filename directory name.
+	 * @param path A pathname string.
+	 */
 	public static void createDirectory(String filename, String path){
 		new File(path+"\\"+filename).mkdirs();
 		System.out.println(path+"\\"+filename+" Created.");

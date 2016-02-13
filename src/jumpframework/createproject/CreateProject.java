@@ -9,8 +9,7 @@ import org.apache.commons.lang3.text.WordUtils;
 
 public class CreateProject {
 	
-	//static String projectPath = System.getProperty("user.dir");
-	//static String projectPath = "F:\\webAppJava\\new";
+	
 	
 	private static String[][] DIR = new String[][]{
 			{"src"},
@@ -56,10 +55,18 @@ public class CreateProject {
 	
 	private static FileUtil fu;
 	
-	
+	/**
+	 * create project(create folder and file etc.) 
+	 * 
+	 * @param projectPath Project Location.
+	 * @param connection Connection String for create jdbc.properties.
+	 * @param user database user for create jdbc.properties. 
+	 * @param pass database password for create jdbc.properties.
+	 * @return true if success.
+	 */
 	public static boolean createProject(String projectPath, String connection, String user, String pass){
 		InputSteamToFileApp in = new InputSteamToFileApp();
-		in.extactFile(projectPath);
+		in.extactFileTemplate(projectPath);
 		for(int i=0;i<DIR.length;i++){
 			 String path = projectPath+subProjectPath[i];
 			 System.out.println("This is projectPath-> " + path);
@@ -105,7 +112,10 @@ public class CreateProject {
 
 
 
-
+	/**
+	 * create HibernateConfig -> hibernate.cfg.xml in src.main.resources
+	 * @param projectPath project location.
+	 */
 	public static void createHibernateConfig(String projectPath) {
 		File f = new File(projectPath+"\\src\\main\\java\\com\\spring\\model");
 		File[] fl = f.listFiles();
@@ -142,7 +152,14 @@ public class CreateProject {
 
 
 
-
+	/**
+	 * create jdbc.properties
+	 * 
+	 * @param projectPath project location.
+	 * @param connection Connection String for create jdbc.properties.
+	 * @param user database user for create jdbc.properties. 
+	 * @param pass database password for create jdbc.properties.
+	 */
 	private static void createJdbc(String projectPath, String connection, String user, String pass) {
 		fu = new FileUtil();
 		File file = fu.createFile("jdbc", projectPath+"\\src\\main\\webapp\\WEB-INF\\", "properties");

@@ -1,7 +1,6 @@
 package jumpframework.createproject;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,8 +9,11 @@ import java.util.zip.ZipFile;
 
 public class InputSteamToFileApp  {
 	
-	
-	public void extactFile(String projectPath){
+	/**
+	 * 
+	 * @param projectPath
+	 */
+	public void extactFileTemplate(String projectPath){
 		InputStream inputStream = null;
 		OutputStream outputStream = null;
 
@@ -31,7 +33,7 @@ public class InputSteamToFileApp  {
 			}
 			
 			
-	    	UnZip.unzipFileIntoDirectory(new ZipFile(projectPath+"\\template.zip"),new File(projectPath));
+	    	UnZip.unzipFileIntoDirectory(new ZipFile(projectPath+"\\template.zip"), new File(projectPath));
 
 			System.out.println("Done!");
 
@@ -57,8 +59,4 @@ public class InputSteamToFileApp  {
 		}
 	}
 	
-    public static void main(String[] args) {
-
-	
-    }
 }

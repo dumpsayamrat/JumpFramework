@@ -13,30 +13,7 @@ import java.util.zip.ZipInputStream;
 
 public class UnZip
 {
-    List<String> fileList;
-    private static final String INPUT_ZIP_FILE = "C:\\MyFile.zip";
-    private static final String OUTPUT_FOLDER = "C:\\outputzip";
-		
-    public static void main( String[] args )
-    {
-    	String projectPath="F:\\runtime-EclipseApplication\\qwe";
-    	FileUtil.deleteFile(projectPath+"\\template.zip");
-    	/*UnZip unZip = new UnZip();
-    	unZip.unZipIt("F:\\runtime-EclipseApplication\\power\\poo.zip",
-    			"C:\\Users\\56023_000\\Documents\\GitHub\\JumpFramework\\foo\\");*/
-    	/*try {
-			unzipFileIntoDirectory(new ZipFile("F:\\runtime-EclipseApplication\\power\\poo.zip"), new File("C:\\Users\\56023_000\\Documents\\GitHub\\JumpFramework\\foo\\"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-    	/* try {
-    	        ZipFile zipFile = new ZipFile("F:\\runtime-EclipseApplication\\power\\poo.zip");
-    	        zipFile.extractAll("C:\\Users\\56023_000\\Documents\\GitHub\\JumpFramework\\foo\\");
-    	    } catch (ZipException e) {
-    	        e.printStackTrace();
-    	    }*/
-    }
+    List<String> fileList; 
     
     /**
      * Unzip it
