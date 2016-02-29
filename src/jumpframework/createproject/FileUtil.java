@@ -7,6 +7,11 @@ import org.apache.commons.io.FileUtils;
 
 public class FileUtil {
 	
+	/**
+	 * Creates the directory named.
+	 * @param filename directory name.
+	 * @param path A pathname string.
+	 */
 	public static void createDirectory(String filename, String path){
 		new File(path+"\\"+filename).mkdirs();
 		System.out.println(path+"\\"+filename+" Created.");
@@ -61,6 +66,32 @@ public class FileUtil {
 		 return new File(path).isDirectory();
 		
 	 }
+
+	 /**
+	  * delete directory 
+	  * 
+	  * @param path target path for delete
+	  */
+	public static void deleteDirectory(String path) {
+		try {
+			FileUtils.forceDelete(new File(path));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	/**
+	 * delete file
+	 * @param path target file for delete
+	 */
+	public static void deleteFile(String path) {
+		new File(path).delete();
+		System.out.println(path+" deleted.");
+		
+	}
+
 	
 	
 	

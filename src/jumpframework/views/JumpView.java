@@ -91,6 +91,7 @@ public class JumpView extends ViewPart {
 		btnConnect.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				lblInfo.setText("Waiting....");
 				mysql = new MySQL(txtDatabase.getText(), txtUser.getText(), txtPass.getText());
 				if (mysql.getConnection()){
 					String[] tables = mysql.getTablesName();
@@ -98,7 +99,7 @@ public class JumpView extends ViewPart {
 					comboTB.setText("Select Table");
 					lblInfo.setText("Connection Success.");
 				}
-				else lblInfo.setText("Connection failed.");
+				else lblInfo.setText("Connection Failed.");
 			}
 		});
 		btnConnect.setBounds(416, 125, 75, 25);
@@ -144,12 +145,13 @@ public class JumpView extends ViewPart {
 		btnGenerate.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				lblInfo.setText("Waiting....");
 				if(FileUtil.checkLocation(txtLocation.getText())){
 					if(comboTB.getText().equals("")){
 						lblInfo.setText("Please select table.");
 					}
 					else{
-						if(CreateProject.createProject(txtLocation.getText())){
+						if(CreateProject.createProject(txtLocation.getText(),txtDatabase.getText(), txtUser.getText(), txtPass.getText() )){
 							
 							mysql = new MySQL(txtDatabase.getText(), txtUser.getText(), txtPass.getText());
 							if (mysql.getConnection()){
@@ -160,11 +162,15 @@ public class JumpView extends ViewPart {
 								writer = new Writer(comboTB.getText(), "controller", txtLocation.getText(), mysql);
 								writer = new Writer(comboTB.getText(), "view", txtLocation.getText(), mysql);
 								
+								//create new hibernate.cfg.xml
+								CreateProject.createHibernateConfig(txtLocation.getText());
 								lblInfo.setText("Generation Success.");
+							}else{
+								lblInfo.setText("Connection Failed.");
 							}
 							
 						}else{
-							
+							lblInfo.setText("Generation Failed.");
 						}
 						
 					}

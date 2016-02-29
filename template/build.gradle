@@ -9,7 +9,7 @@ repositories {
     mavenCentral()
 }
 
-war.archiveName "jweb2.war"
+war.archiveName "jumpweb.war"
  
 //Project dependencies
 dependencies {
