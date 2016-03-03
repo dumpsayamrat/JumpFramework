@@ -110,7 +110,7 @@ public class JumpView extends ViewPart {
 		txtDatabase.setBounds(149, 64, 252, 21);
 		
 		Label lblDatabaseName = new Label(parent, SWT.NONE);
-		lblDatabaseName.setText("Connecttion String");
+		lblDatabaseName.setText("Connection String");
 		lblDatabaseName.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		lblDatabaseName.setBounds(22, 67, 101, 18);
 		
