@@ -9,6 +9,11 @@ import jumpframework.createproject.FileUtil;
 import org.apache.commons.lang3.text.WordUtils;
 
 public class WriteServiceImpl extends Write {
+	
+	/**
+	 * type of file
+	 */
+	final static private String type = "serviceImpl";
 
 	/*
 	 * table's name 
@@ -69,50 +74,13 @@ public class WriteServiceImpl extends Write {
 	private void writeFile() {
 		try {
 			FileWriter fw = new FileWriter(file);
-			fw.write("package com.spring.repository;\n\n");
-			fw.write("import java.util.List;\n\n");
-			fw.write("import org.springframework.beans.factory.annotation.Autowired;\n");
-			fw.write("import org.springframework.stereotype.Service;\n");
-			fw.write("import org.springframework.transaction.annotation.Transactional;\n\n");
-			fw.write("import com.spring.dao."+WordUtils.capitalize(tableName)+"Dao;\n");
-			fw.write("import com.spring.model."+WordUtils.capitalize(tableName)+";\n");
-			fw.write("import com.spring.service."+WordUtils.capitalize(tableName)+"Service;\n\n");
-			fw.write("@Service\n");
-			fw.write("public class "+WordUtils.capitalize(tableName)+"ServiceImpl implements "+WordUtils.capitalize(tableName)+"Service {\n\n");
-			fw.write("\t@Autowired\n");
-			fw.write("\tprivate "+WordUtils.capitalize(tableName)+"Dao "+tableName.toLowerCase()+"Dao;\n\n");
-			
-			fw.write("\t@Transactional\n");
-			fw.write("\tpublic void add("+WordUtils.capitalize(tableName)+" "+tableName.toLowerCase()+") {\n");
-			fw.write("\t\t"+tableName.toLowerCase()+"Dao.add("+tableName.toLowerCase()+");\n");
-			fw.write("\t}\n\n");
-			
-			fw.write("\t@Transactional\n");
-			fw.write("\tpublic void edit("+WordUtils.capitalize(tableName)+" "+tableName.toLowerCase()+") {\n");
-			fw.write("\t\t"+tableName.toLowerCase()+"Dao.edit("+tableName.toLowerCase()+");\n");
-			fw.write("\t}\n\n");
-			
-			fw.write("\t@Transactional\n");
-			fw.write("\tpublic void delete(int "+tableName.toLowerCase()+"Id) {\n");
-			fw.write("\t\t"+tableName.toLowerCase()+"Dao.delete("+tableName.toLowerCase()+"Id);\n");
-			fw.write("\t}\n\n");
-			
-			fw.write("\t@Transactional\n");
-			fw.write("\tpublic "+WordUtils.capitalize(tableName)+" get"+WordUtils.capitalize(tableName)+"(int "+tableName.toLowerCase()+"Id) {\n");
-			fw.write("\t\treturn "+tableName.toLowerCase()+"Dao.get"+WordUtils.capitalize(tableName)+"("+tableName.toLowerCase()+"Id);\n");
-			fw.write("\t}\n\n");
-			
-			fw.write("\t@Transactional\n");
-			fw.write("\tpublic List getAll"+WordUtils.capitalize(tableName)+"() {\n");
-			fw.write("\t\treturn "+tableName.toLowerCase()+"Dao.getAll"+WordUtils.capitalize(tableName)+"();\n");
-			fw.write("\t}\n\n");
-			
-			fw.write("}");
-			
+			String content = getContent(path, tableName, type, fields);
+			fw.write(content);
 			fw.flush();
 			fw.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 		
 	}

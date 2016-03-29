@@ -1,0 +1,65 @@
+<%@ include file="/WEB-INF/pages/header.jsp"%>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-3">
+				<p class="lead">${nameCapitalize}</p>
+				<div class="list-group">
+					<a href="<c:url value='/${nameLowerCase}' />" class="list-group-item active">List all ${nameCapitalize}</a>
+					<a href="<c:url value='/${nameLowerCase}/add' />" class="list-group-item">Create new ${nameCapitalize}</a>
+				</div>
+			</div>
+			<div class="col-md-9">
+				<div class="thumbnail">
+					<div class="caption-full">
+						<h3>List all ${nameCapitalize}</h3>
+						${loopTable}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<%@ include file="/WEB-INF/pages/footer.jsp"%>
+<script>
+	var url = "";
+	$(document).ready(function() {
+	    console.log( "ready!" );
+	    
+	   $("input").on('keyup change',function(e){
+			e.preventDefault();
+			url = "${addAction}";
+			var form = $("#${nameLowerCase}Search");
+	    	if($('#id').val() === ""){
+	    		$('#id').val("0");
+	    	}
+	    	var search = form.serialize();
+	    	$.ajax({
+		        type : "post",
+		        url : url,
+		        data : search,
+		        dataType: 'json',
+		        success: function(data){
+		        	var content = $('#rows-content');
+		        	var rowNum = 1;
+		        	content.empty();
+		        	$.each(data, function(index, value){
+		        		var j = 0;
+		        		var id = 0;
+		        		content.append("<tr id='row-content-"+rowNum+"'></tr>");
+		        		var rowContent = $('#row-content-'+rowNum);
+		        		$.each(value, function(index, value){
+		        			if(j==0){
+		        				id = value; 
+		        			}
+		        			rowContent.append("<td>"+ value +"</td>");
+		        			j++;
+		        		});
+		        		var pathName = window.location.pathname.split("/");
+		        		var tmp = "<td><a href='<c:url value='/"+pathName[2]+"/"+id+"/update' />' >Update</a><a href='<c:url value='/"+pathName[2]+"/"+id+"/delete' />' >Delete</a></td>";
+		        		rowContent.append(tmp);
+		        		rowNum++;
+		        	});
+		        }
+		    }); 
+	    });
+	});
+</script>

@@ -13,6 +13,11 @@ import org.apache.commons.lang3.text.WordUtils;
 
 public class WriteModel extends Write {
 	
+	/**
+	 * type of file
+	 */
+	final static private String type = "model";
+	
 	/*
 	 * table's name 
 	 */
@@ -71,53 +76,15 @@ public class WriteModel extends Write {
 		
 		try {
 			FileWriter fw = new FileWriter(file);
-			fw.write("package com.spring.model;\n\n");
-			fw.write("import javax.persistence.Column;\n");
-			fw.write("import javax.persistence.Entity;\n");
-			fw.write("import javax.persistence.GeneratedValue;\n");
-			fw.write("import javax.persistence.GenerationType;\n");
-			fw.write("import javax.persistence.Id;\n");
-			fw.write("import javax.persistence.Table;\n\n");
-			fw.write("@Entity\n");
-			fw.write("@Table(name = \""+tableName+"\")\n");
-			fw.write("public class "+WordUtils.capitalize(tableName)+" {\n\n");
-			
-			//  writes properties || TODO This not finish, it should check primary Key;
-			for(int i=0; i<fields.length; i++){
-				if(fields[i][2].equals("YES")){
-					fw.write("\t@Id\n");
-					fw.write("\t@Column(name = \""+fields[i][0]+"\")\n");
-					fw.write("\t@GeneratedValue(strategy = GenerationType.AUTO)\n");
-					fw.write("\tprivate "+getTypeVariable().get(fields[i][1])+" "+fields[i][0].toLowerCase()+";\n\n");
-				}else{
-					fw.write("\t@Column(name = \""+fields[i][0]+"\")\n");
-					fw.write("\tprivate "+getTypeVariable().get(fields[i][1])+" "+fields[i][0].toLowerCase()+";\n\n");
-				}
-			}
-			
-			// writes getter setter
-			for(int i=0; i<fields.length; i++){
-				//getter
-				fw.write("\tpublic "+getTypeVariable().get(fields[i][1])+" get"+WordUtils.capitalize(fields[i][0])+"() {\n");
-				fw.write("\t\treturn "+fields[i][0].toLowerCase()+";\n");
-				fw.write("\t}\n\n");
-				
-				//setter
-				fw.write("\tpublic void set"+WordUtils.capitalize(fields[i][0])
-							+"("+getTypeVariable().get(fields[i][1])+" "
-							+fields[i][0].toLowerCase()+") {\n");
-				fw.write("\t\tthis."+fields[i][0].toLowerCase()+" = "+fields[i][0].toLowerCase()+";\n");
-				fw.write("\t}\n\n");
-				
-			}
-			
-			fw.write("\n}");
+			String content = getContent(path, tableName, type, fields);
+			fw.write(content);
 			fw.flush();
 			fw.close();
 			
 		} catch (IOException e) {
 			
 			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 		
 	}

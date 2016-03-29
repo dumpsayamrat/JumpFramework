@@ -1,45 +1,25 @@
 package jumpframework.views;
 
-import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.Panel;
-import java.awt.PopupMenu;
 import java.awt.TextField;
-
-
-
-import java.awt.event.InputMethodListener;
-
-import javax.swing.JButton;
 
 import jumpframework.createproject.CreateProject;
 import jumpframework.createproject.FileUtil;
+import jumpframework.createproject.InputSteamToFileApp;
 import jumpframework.createproject.MySQL;
 import jumpframework.createproject.Writer;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.browser.LocationEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.internal.win32.SIZE;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.eclipse.swt.events.TouchListener;
-import org.eclipse.swt.events.TouchEvent;
 import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.custom.CCombo;
-import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.swt.custom.ScrolledComposite;
 
 public class JumpView extends ViewPart {
 
@@ -66,13 +46,6 @@ public class JumpView extends ViewPart {
 
 	}
 
-	/*public void dbcon() {
-		Connector conn = new Connector("cdcol", "root", "");
-		conn.connection();
-		conn.showTableName();
-			
-	}
-	*/
 	public void createPartControl(Composite parent) {
 		parent.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		panel = new Panel();
@@ -146,21 +119,24 @@ public class JumpView extends ViewPart {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				lblInfo.setText("Waiting....");
-				if(FileUtil.checkLocation(txtLocation.getText())){
+				String locationPath = txtLocation.getText();
+				if(FileUtil.checkLocation(locationPath)){
 					if(comboTB.getText().equals("")){
 						lblInfo.setText("Please select table.");
 					}
 					else{
-						if(CreateProject.createProject(txtLocation.getText(),txtDatabase.getText(), txtUser.getText(), txtPass.getText() )){
+						InputSteamToFileApp in = new InputSteamToFileApp();
+						in.extactFileTemplate(locationPath);
+						if(CreateProject.createProject(locationPath,txtDatabase.getText(), txtUser.getText(), txtPass.getText() )){
 							
 							mysql = new MySQL(txtDatabase.getText(), txtUser.getText(), txtPass.getText());
 							if (mysql.getConnection()){
-								writer = new Writer(comboTB.getText(), "model", txtLocation.getText(), mysql);
-								writer = new Writer(comboTB.getText(), "dao", txtLocation.getText(), mysql);
-								writer = new Writer(comboTB.getText(), "service", txtLocation.getText(), mysql);
-								writer = new Writer(comboTB.getText(), "repository", txtLocation.getText(), mysql);
-								writer = new Writer(comboTB.getText(), "controller", txtLocation.getText(), mysql);
-								writer = new Writer(comboTB.getText(), "view", txtLocation.getText(), mysql);
+								writer = new Writer(comboTB.getText(), "model", locationPath, mysql);
+								writer = new Writer(comboTB.getText(), "dao", locationPath, mysql);
+								writer = new Writer(comboTB.getText(), "service", locationPath, mysql);
+								writer = new Writer(comboTB.getText(), "repository", locationPath, mysql);
+								writer = new Writer(comboTB.getText(), "controller", locationPath, mysql);
+								writer = new Writer(comboTB.getText(), "view", locationPath, mysql);
 								
 								//create new hibernate.cfg.xml
 								CreateProject.createHibernateConfig(txtLocation.getText());
@@ -172,7 +148,8 @@ public class JumpView extends ViewPart {
 						}else{
 							lblInfo.setText("Generation Failed.");
 						}
-						
+						FileUtil.deleteFile(locationPath+"\\template.zip");
+						FileUtil.deleteDirectory(locationPath+"\\template");
 					}
 				}
 				else lblInfo.setText(txtLocation.getText()+"Wrong project location.");

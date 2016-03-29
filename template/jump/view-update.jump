@@ -1,0 +1,22 @@
+<%@ include file="/WEB-INF/pages/header.jsp"%>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-3">
+				<p class="lead">${nameCapitalize}</p>
+				<div class="list-group">
+					<a href="<c:url value='/${nameLowerCase}' />" class="list-group-item">List all ${nameCapitalize}</a>
+					<a href="<c:url value='/${nameLowerCase}/add' />" class="list-group-item">Create new ${nameCapitalize}</a>
+				</div>
+			</div>
+			<div class="col-md-9">
+				<div class="thumbnail">
+					<div class="caption-full">
+						<h3>Update ${nameCapitalize}</h3>
+						<c:url var='addAction' value='/${nameLowerCase}.do' />
+						${loopFormUpdate}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<%@ include file="/WEB-INF/pages/footer.jsp"%>

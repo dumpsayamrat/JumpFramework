@@ -35,7 +35,7 @@ public class CreateProject {
 		{"log4j.xml"},
 		{"Theme"},
 		{"web.xml", "jumpweb-servlet.xml"},
-		{"includes.jsp", "index.jsp", "about.jsp", "contact.jsp"},
+		{"header.jsp", "index.jsp", "about.jsp", "contact.jsp", "footer.jsp"},
 		{"WelcomeController.java"}
 	};
 	
@@ -65,8 +65,7 @@ public class CreateProject {
 	 * @return true if success.
 	 */
 	public static boolean createProject(String projectPath, String connection, String user, String pass){
-		InputSteamToFileApp in = new InputSteamToFileApp();
-		in.extactFileTemplate(projectPath);
+		
 		for(int i=0;i<DIR.length;i++){
 			 String path = projectPath+subProjectPath[i];
 			 System.out.println("This is projectPath-> " + path);
@@ -101,9 +100,7 @@ public class CreateProject {
 					System.out.println(FILE[i][j]+" is exists.");
 				}					
 			 }
-		 }	
-		FileUtil.deleteFile(projectPath+"\\template.zip");
-		FileUtil.deleteDirectory(projectPath+"\\template");
+		 }
 		createJdbc(projectPath,connection, user, pass);
 			
 		return true;

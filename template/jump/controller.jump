@@ -1,0 +1,99 @@
+package com.spring.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.spring.model.${modelName};
+import com.spring.service.${nameCapitalize}Service;
+
+@Controller
+public class ${nameCapitalize}Controller {
+
+	@Autowired
+	private ${nameCapitalize}Service ${nameLowerCase}Service;
+
+	@RequestMapping(value = "/${nameLowerCase}")
+	public String list(Map<String, Object> map){
+		String title = "${nameCapitalize} | List";
+		map.put("title", title);
+		
+		map.put("${nameLowerCase}List", ${nameLowerCase}Service.getSearch(new HashMap<>()));
+		map.put("${nameLowerCase}",new ${modelName}());
+		return "${nameLowerCase}/list";
+	}
+
+	@RequestMapping(value = "/${nameLowerCase}/add")
+	public String add(Map<String, Object> map){
+		String title = "${nameCapitalize} | Add";
+		map.put("title", title);
+		
+		${modelName} ${nameLowerCase} = new ${modelName}();
+		map.put("${nameLowerCase}", ${nameLowerCase});
+		return "${nameLowerCase}/add";
+	}
+
+	@RequestMapping("/${nameLowerCase}/{id}/delete")
+	public String delete(@PathVariable("id") int id){
+		${nameLowerCase}Service.delete(id);
+		return "redirect:/${nameLowerCase}";
+	}
+
+	@RequestMapping("/${nameLowerCase}/{id}/update")
+	public String edit(@PathVariable("id") int id, Map<String, Object> map){
+		String title = "${nameCapitalize} | Update";
+		map.put("title", title);
+		
+		map.put("${nameLowerCase}", ${nameLowerCase}Service.get${nameCapitalize}(id));
+		return "${nameLowerCase}/update";
+	}
+
+	@RequestMapping(value = "/${nameLowerCase}.do",method=RequestMethod.POST)
+	public String doAction(@ModelAttribute ${modelName} ${nameLowerCase}, BindingResult result, @RequestParam String action, Map<String, Object> map){
+
+		${modelName} ${nameLowerCase}Result = new ${modelName}();
+		switch(action.toLowerCase()){
+		case "add":
+			${nameLowerCase}Service.add(${nameLowerCase});
+			${nameLowerCase}Result = ${nameLowerCase};
+			break;
+		case "edit":
+			${nameLowerCase}Service.edit(${nameLowerCase});
+			${nameLowerCase}Result = ${nameLowerCase};
+			break;
+		case "delete":
+			${nameLowerCase}Service.delete(${nameLowerCase}.get${namePrimaryKey}());
+			${nameLowerCase}Result = new ${modelName}();
+			break;
+		}
+		map.put("${nameLowerCase}", ${nameLowerCase}Result);
+		map.put("${nameLowerCase}List", ${nameLowerCase}Service.getAll${nameCapitalize}());
+		return "redirect:/${nameLowerCase}";
+	}
+	
+	@RequestMapping(value = "/${nameLowerCase}/search", method = RequestMethod.POST)
+	@ResponseBody
+	public List<${modelName}> search(@ModelAttribute ${modelName} ${nameLowerCase}, @RequestParam(required = false) String action,
+			Map<String, Object> map){
+		
+		Map<String ,String> mapSearch = new HashMap<String, String>();
+		${loopMapSearch}
+		
+		List<${modelName}> list${nameCapitalize} = new ArrayList<${modelName}>();
+		list${nameCapitalize} = ${nameLowerCase}Service.getSearch(mapSearch);
+		return list${nameCapitalize};
+	}
+
+}

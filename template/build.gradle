@@ -13,19 +13,23 @@ war.archiveName "jumpweb.war"
  
 //Project dependencies
 dependencies {
-	compile 'org.springframework:spring-core:3.0.5.RELEASE'	
-	compile 'org.springframework:spring-beans:3.0.5.RELEASE'
-	compile 'org.springframework:spring-context:3.0.5.RELEASE'
-	compile 'org.springframework:spring-web:3.0.5.RELEASE'
-	compile 'org.springframework:spring-webmvc:3.0.5.RELEASE'
-	compile 'org.springframework:spring-jdbc:3.0.5.RELEASE'
-	compile 'org.springframework:spring-orm:3.0.5.RELEASE'
+	compile 'org.springframework:spring-core:3.1.2.RELEASE'	
+	compile 'org.springframework:spring-beans:3.1.2.RELEASE'
+	compile 'org.springframework:spring-context:3.1.2.RELEASE'
+	compile 'org.springframework:spring-web:3.1.2.RELEASE'
+	compile 'org.springframework:spring-webmvc:3.1.2.RELEASE'
+	compile 'org.springframework:spring-jdbc:3.1.2.RELEASE'
+	compile 'org.springframework:spring-orm:3.1.2.RELEASE'
 	
 	compile 'org.hibernate:hibernate-entitymanager:3.6.7.Final'
 	compile 'org.hibernate:hibernate-validator:4.3.0.Final'
 	compile 'org.hibernate:hibernate-commons-annotations:3.3.0.ga'
 	compile 'org.hibernate:hibernate-annotations:3.3.1.GA'
 	compile 'org.hibernate:hibernate-core:3.3.2.GA'
+	
+	compile 'com.fasterxml.jackson.core:jackson-core:2.2.3'
+	compile 'com.fasterxml.jackson.core:jackson-databind:2.2.3'
+	compile 'com.fasterxml.jackson.core:jackson-annotations:2.2.3'
 	
 	compile 'javax.servlet:jstl:1.1.2'
     compile 'taglibs:standard:1.1.2'

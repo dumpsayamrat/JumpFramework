@@ -10,6 +10,11 @@ import org.apache.commons.lang3.text.WordUtils;
 
 public class WriteDao extends Write {
 	
+	/**
+	 * type of file
+	 */
+	final static private String type = "dao";
+	
 	/*
 	 * table's name 
 	 */
@@ -30,6 +35,9 @@ public class WriteDao extends Write {
 	 */
 	private File file;
 	
+	/*
+	 * uri path for create file.
+	 */
 	private String subPath = "\\src\\main\\java\\com\\spring\\dao\\";
 	
 	/**
@@ -68,20 +76,13 @@ public class WriteDao extends Write {
 	private void writeFile() {
 		try {
 			FileWriter fw = new FileWriter(file);
-			fw.write("package com.spring.dao;\n\n");
-			fw.write("import java.util.List;\n\n");
-			fw.write("import com.spring.model."+WordUtils.capitalize(tableName)+";\n\n");
-			fw.write("public interface "+WordUtils.capitalize(tableName)+"Dao {\n\n");
-			fw.write("\tpublic void add("+WordUtils.capitalize(tableName)+" "+tableName.toLowerCase()+");\n");
-			fw.write("\tpublic void edit("+WordUtils.capitalize(tableName)+" "+tableName.toLowerCase()+");\n");		
-			fw.write("\tpublic void delete(int "+tableName.toLowerCase()+"Id);\n");
-			fw.write("\tpublic "+WordUtils.capitalize(tableName)+" get"+WordUtils.capitalize(tableName)+"(int "+tableName.toLowerCase()+"Id);\n");
-			fw.write("\tpublic List getAll"+WordUtils.capitalize(tableName)+"();\n\n");
-			fw.write("}");
+			String content = getContent(path, tableName, type, fields);
+			fw.write(content);
 			fw.flush();
 			fw.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 		
 	}
