@@ -36,7 +36,7 @@ public class CreateProject {
 		{},
 		{"log4j.xml"},
 		{"Theme"},
-		{"web.xml", "jumpweb-servlet.xml"},
+		{"web.xml", "servlet.xml"},
 		{"header.jsp", "index.jsp", "about.jsp", "contact.jsp", "footer.jsp"},
 		{"WelcomeController.java"}
 	};
@@ -95,9 +95,16 @@ public class CreateProject {
 						
 						switch (FILE[i][j]) {
 						case "build.gradle":
-							createBuildGradle(projectPath, path);
+							createFileTemplate(projectPath, path, "build", "gradle", "build.gradle");
 							break;
-
+						case "web.xml":
+							createFileTemplate(projectPath, path, "web", "xml", "web.xml");
+							break;
+						case "servlet.xml":
+							String[] tmp = projectPath.split("\\\\");
+							String projectName = tmp[tmp.length-1];
+							createFileTemplate(projectPath, path, projectName.toLowerCase()+"-servlet", "xml", "servlet.xml");
+							break;
 						default:
 							FileUtil.copyFile((FILE[i][j]), path, projectPath);
 							break;
@@ -120,24 +127,28 @@ public class CreateProject {
 
 
 	/**
-	 * create bulid.gradle file 
+	 * create file by template
 	 * 
 	 * @param projectPath use for get project's name
 	 * @param path use for create file
+	 * @param fileName
+	 * @param type
+	 * @param typeOfTemplate
 	 */
-	private static void createBuildGradle(String projectPath, String path) {
+	private static void createFileTemplate(String projectPath, String path, String fileName, String type, String typeOfTemplate) {
 		fu = new FileUtil();
-		File file = fu.createFile("build", path+"\\", "gradle");
+		File file = fu.createFile(fileName, path+"\\", type);
 		
 		String[] tmp = projectPath.split("\\\\");
 		String projectName = tmp[tmp.length-1];
 		
 		Map<String, String> param = new HashMap<>();		
 		param.put("projectName", projectName);
+		param.put("servletName", projectName.toLowerCase());
 		
 		try { 
 			FileWriter fw = new FileWriter(file);
-			String content = fu.writeAsTemplate(projectPath, param, "build.gradle");
+			String content = fu.writeAsTemplate(projectPath, param, typeOfTemplate);
 			fw.write(content);
 			fw.flush();
 			fw.close();
@@ -145,8 +156,6 @@ public class CreateProject {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 		}
-		
-		
 	}
 
 
