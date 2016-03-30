@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.text.WordUtils;
 
-public abstract class Write {
+public class Write {
 	
 	private Map<String, String> mapNameProperties;
 	private String tableName;
@@ -138,7 +138,6 @@ public abstract class Write {
 		map.put("nameLowerCase", tableName2.toLowerCase());
 		map.put("tableName", tableName2);
 		map.put("namePrimaryKey", WordUtils.capitalize(fields[0][0]));
-		map.put("addAction", "${addAction}");
 		return map;
 	}
 
@@ -166,7 +165,12 @@ public abstract class Write {
 				sCurrentLine = loopFormUpdate(sCurrentLine);
 				break;
 			default:
-				sCurrentLine = sCurrentLine.replace("${"+nameProperty+"}", mapNameProperties.get(nameProperty) );
+				if(mapNameProperties.containsKey(nameProperty)){
+					sCurrentLine = sCurrentLine.replace("${"+nameProperty+"}", mapNameProperties.get(nameProperty) );
+				}else{
+					return sCurrentLine;
+				}
+				
 				break;
 			}
 		}
@@ -179,7 +183,7 @@ public abstract class Write {
 	 * just for test.
 	 */
 	public static void main(String[] args) {
-		Write w = new Write() {};
+		Write w = new Write();
 		String[][] ss = new String[][]{{"id", "INTEGER", "YES"},{"name","VARCHAR", "NO"}};
 		w.getContent(System.getProperty("user.dir"), "customer", "view-add", ss);
 	}
