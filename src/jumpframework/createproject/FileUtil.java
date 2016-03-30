@@ -1,7 +1,13 @@
 package jumpframework.createproject;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 
@@ -90,6 +96,57 @@ public class FileUtil {
 		new File(path).delete();
 		System.out.println(path+" deleted.");
 		
+	}
+
+	/**
+	 * read & write template file
+	 * 
+	 * @param locationPath location project's path
+	 * @param param HashMap is contains value of properties
+	 * @param type file's name or file's type
+	 * @return content of file form template's type
+	 */
+	public String writeAsTemplate(String locationPath, Map<String, String> param, String type) {
+		
+		String content="";
+		BufferedReader br = null;
+
+		try {
+			
+
+			String sCurrentLine;
+
+			br = new BufferedReader(new FileReader(locationPath + "\\template\\jump\\"+type+".jump"));
+
+			while ((sCurrentLine = br.readLine()) != null) {
+				sCurrentLine = repleceNameProperties(sCurrentLine, param);
+				content += sCurrentLine + "\n";
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		} finally {
+			try {
+				if (br != null)br.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+				System.out.println(ex.getMessage());
+			}
+		}
+		return content;
+	}
+
+
+	private String repleceNameProperties(String sCurrentLine, Map<String, String> param) {
+		Matcher m = Pattern.compile("\\$\\{(.*?)\\}").matcher(sCurrentLine);
+		while(m.find()) {
+			String nameProperty = m.group(1);
+			if(param.containsKey(nameProperty)){
+				sCurrentLine = sCurrentLine.replace("${"+nameProperty+"}", param.get(nameProperty));
+			}
+		}
+		return sCurrentLine;
 	}
 
 	

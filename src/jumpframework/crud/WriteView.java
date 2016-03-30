@@ -1,13 +1,10 @@
 package jumpframework.crud;
 
-import java.beans.FeatureDescriptor;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
 import jumpframework.createproject.FileUtil;
-
-import org.apache.commons.lang3.text.WordUtils;
 
 public class WriteView extends Write {
 	

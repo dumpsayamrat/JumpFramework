@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -90,7 +92,16 @@ public class CreateProject {
 					
 				if(!checkName.contains(FILE[i][j])){
 					try {
-						FileUtil.copyFile((FILE[i][j]), path, projectPath);
+						
+						switch (FILE[i][j]) {
+						case "build.gradle":
+							createBuildGradle(projectPath, path);
+							break;
+
+						default:
+							FileUtil.copyFile((FILE[i][j]), path, projectPath);
+							break;
+						}
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -104,6 +115,37 @@ public class CreateProject {
 		createJdbc(projectPath,connection, user, pass);
 			
 		return true;
+		
+	}
+
+
+	/**
+	 * create bulid.gradle file 
+	 * 
+	 * @param projectPath use for get project's name
+	 * @param path use for create file
+	 */
+	private static void createBuildGradle(String projectPath, String path) {
+		fu = new FileUtil();
+		File file = fu.createFile("build", path+"\\", "gradle");
+		
+		String[] tmp = projectPath.split("\\\\");
+		String projectName = tmp[tmp.length-1];
+		
+		Map<String, String> param = new HashMap<>();		
+		param.put("projectName", projectName);
+		
+		try { 
+			FileWriter fw = new FileWriter(file);
+			String content = fu.writeAsTemplate(projectPath, param, "build.gradle");
+			fw.write(content);
+			fw.flush();
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		
 		
 	}
 
