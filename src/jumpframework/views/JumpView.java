@@ -36,10 +36,12 @@ public class JumpView extends ViewPart {
 	private Text txtLocation;
 	Writer writer;
 
-	String selectedDir;
-	private Text TextTable;
+	private String selectedDir;
 	private Composite composite2;
+	
 	private Button[] btnCheck;
+	private Button btnSelectAllTable;
+	private Button btnUnSelectAll;
 	
 	public JumpView() {
 		
@@ -74,18 +76,11 @@ public class JumpView extends ViewPart {
 					String[] tables = mysql.getTablesName();
 					
 					btnCheck = new Button[tables.length];
-					for (int d = 0; d < btnCheck.length*10; d++) {
+					for (int d = 0; d < btnCheck.length; d++) {
 						
-						btnCheck[0] = new Button(composite2, SWT.CHECK);
-						
-						btnCheck[0].addSelectionListener(new SelectionAdapter() {
-							@Override
-							public void widgetSelected(SelectionEvent e) {
-						     
-							}
-						});
-						btnCheck[0].setBounds(10, 10 + (d * 20), 93, 16);
-						btnCheck[0].setText(tables[0]+"."+d);
+						btnCheck[d] = new Button(composite2, SWT.CHECK);
+						btnCheck[d].setBounds(10, 10 + (d * 20), 93, 16);
+						btnCheck[d].setText(tables[d]);
 					}
 					lblInfo.setText("Connection Success.");
 				}
@@ -128,6 +123,8 @@ public class JumpView extends ViewPart {
 		lblInfo.setBounds(68, 400, 386, 70);
 		
 		Button btnGenerate = new Button(parent, SWT.NONE);
+		btnGenerate.setBounds(416, 330, 75, 25);
+		btnGenerate.setText("Generate");
 		btnGenerate.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -176,8 +173,7 @@ public class JumpView extends ViewPart {
 				else lblInfo.setText(txtLocation.getText()+"Wrong project location.");*/
 			}
 		});
-		btnGenerate.setBounds(416, 207, 75, 25);
-		btnGenerate.setText("Generate");
+		
 		
 		txtLocation = new Text(parent, SWT.BORDER);
 		txtLocation.setBounds(149, 181, 252, 21);
@@ -218,6 +214,31 @@ public class JumpView extends ViewPart {
 			}
 		});
 		
+		btnSelectAllTable = new Button(parent, SWT.NONE);
+		btnSelectAllTable.setBounds(416, 207, 91, 25);
+		btnSelectAllTable.setText("Select all tables");
+		btnSelectAllTable.addSelectionListener(new SelectionAdapter() {
+			@Override
+			
+			public void widgetSelected(SelectionEvent e) {
+				for (int b = 0; b < btnCheck.length; b++) {
+					btnCheck[b].setSelection(true);	
+				}
+				
+			}
+		});
+		
+		btnUnSelectAll = new Button(parent, SWT.NONE);
+		btnUnSelectAll.setBounds(416, 236, 109, 25);
+		btnUnSelectAll.setText("Unselect all tables");
+		btnUnSelectAll.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				for (int b = 0; b < btnCheck.length; b++) {
+					btnCheck[b].setSelection(false);	
+				}
+			}
+		});
 		
 		composite2 = new Composite(parent, SWT.NONE | SWT.V_SCROLL);
 		composite2.setBounds(149, 209, 252, 147);
