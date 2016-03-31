@@ -128,49 +128,48 @@ public class JumpView extends ViewPart {
 		btnGenerate.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				String s = "";
-				for (int d = 0; d < btnCheck.length; d++) {
-					
-					if(btnCheck[d].getSelection()){
-						s+=btnCheck[d].getText();
-					}
-					lblInfo.setText(s);
-				}
-				/*lblInfo.setText("Waiting....");
+				lblInfo.setText("Waiting....");
 				String locationPath = txtLocation.getText();
 				if(FileUtil.checkLocation(locationPath)){
-					if(comboTB.getText().equals("")){
-						lblInfo.setText("Please select table.");
-					}
-					else{
-						InputSteamToFileApp in = new InputSteamToFileApp();
-						in.extactFileTemplate(locationPath);
-						if(CreateProject.createProject(locationPath,txtDatabase.getText(), txtUser.getText(), txtPass.getText() )){
-							
-							mysql = new MySQL(txtDatabase.getText(), txtUser.getText(), txtPass.getText());
-							if (mysql.getConnection()){
-								writer = new Writer(comboTB.getText(), "model", locationPath, mysql);
-								writer = new Writer(comboTB.getText(), "dao", locationPath, mysql);
-								writer = new Writer(comboTB.getText(), "service", locationPath, mysql);
-								writer = new Writer(comboTB.getText(), "repository", locationPath, mysql);
-								writer = new Writer(comboTB.getText(), "controller", locationPath, mysql);
-								writer = new Writer(comboTB.getText(), "view", locationPath, mysql);
-								
-								//create new hibernate.cfg.xml
-								CreateProject.createHibernateConfig(txtLocation.getText());
-								lblInfo.setText("Generation Success.");
-							}else{
-								lblInfo.setText("Connection Failed.");
+					InputSteamToFileApp in = new InputSteamToFileApp();
+					in.extactFileTemplate(locationPath);
+					boolean isCreated = CreateProject.createProject(locationPath,txtDatabase.getText(), txtUser.getText(), txtPass.getText());
+					
+					if(isCreated){
+						
+						mysql = new MySQL(txtDatabase.getText(), txtUser.getText(), txtPass.getText());
+						if (mysql.getConnection()){					
+							String textInfo = "";
+							for (int d = 0; d < btnCheck.length; d++) {								
+								if(btnCheck[d].getSelection()){
+									String tableName = btnCheck[d].getText();
+									writer = new Writer(tableName, "model", locationPath, mysql);
+									writer = new Writer(tableName, "dao", locationPath, mysql);
+									writer = new Writer(tableName, "service", locationPath, mysql);
+									writer = new Writer(tableName, "repository", locationPath, mysql);
+									writer = new Writer(tableName, "controller", locationPath, mysql);
+									writer = new Writer(tableName, "view", locationPath, mysql);
+									
+									textInfo += tableName+" has been generated.\n";
+								}							
 							}
 							
+							//create new hibernate.cfg.xml
+							CreateProject.createHibernateConfig(txtLocation.getText());
+							
+							lblInfo.setText(textInfo+"Generation Success.");
 						}else{
-							lblInfo.setText("Generation Failed.");
+							lblInfo.setText("Connection Failed.");
 						}
-						FileUtil.deleteFile(locationPath+"\\template.zip");
-						FileUtil.deleteDirectory(locationPath+"\\template");
+						
+					}else{
+						lblInfo.setText("Generation Failed.");
 					}
+					FileUtil.deleteFile(locationPath+"\\template.zip");
+					FileUtil.deleteDirectory(locationPath+"\\template");
+					
 				}
-				else lblInfo.setText(txtLocation.getText()+"Wrong project location.");*/
+				else lblInfo.setText(txtLocation.getText()+"Wrong project location.");
 			}
 		});
 		
