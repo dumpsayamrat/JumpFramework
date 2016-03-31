@@ -36,6 +36,12 @@ public class JumpView extends ViewPart {
 	private MySQL mysql;
 	private Text txtLocation;
 	Writer writer;
+
+	String selectedDir;
+	private Text TextTable;
+	private Composite composite2;
+	private Button[] btnCheck;
+	private Button btnNewButton;
 	
 	public JumpView() {
 		
@@ -68,8 +74,22 @@ public class JumpView extends ViewPart {
 				mysql = new MySQL(txtDatabase.getText(), txtUser.getText(), txtPass.getText());
 				if (mysql.getConnection()){
 					String[] tables = mysql.getTablesName();
-					comboTB.setItems(tables);
-					comboTB.setText("Select Table");
+					TextTable.setText("Select Table");
+					
+					btnCheck = new Button[tables.length];
+					for (int d = 0; d < btnCheck.length*10; d++) {
+						
+						btnCheck[0] = new Button(composite2, SWT.CHECK);
+						
+						btnCheck[0].addSelectionListener(new SelectionAdapter() {
+							@Override
+							public void widgetSelected(SelectionEvent e) {
+						     
+							}
+						});
+						btnCheck[0].setBounds(10, 10 + (d * 20), 93, 16);
+						btnCheck[0].setText(tables[0]+"."+d);
+					}
 					lblInfo.setText("Connection Success.");
 				}
 				else lblInfo.setText("Connection Failed.");
@@ -108,7 +128,7 @@ public class JumpView extends ViewPart {
 		lblInfo.setForeground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		lblInfo.setBackground(SWTResourceManager.getColor(SWT.COLOR_DARK_GREEN));
 		lblInfo.setFont(SWTResourceManager.getFont("Segoe UI", 16, SWT.BOLD));
-		lblInfo.setBounds(68, 289, 386, 70);
+		lblInfo.setBounds(68, 500, 386, 70);
 		
 		comboTB = new Combo(parent, SWT.NONE);
 		comboTB.setItems(new String[] {});
@@ -118,7 +138,15 @@ public class JumpView extends ViewPart {
 		btnGenerate.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				lblInfo.setText("Waiting....");
+				String s = "";
+				for (int d = 0; d < btnCheck.length; d++) {
+					
+					if(btnCheck[d].getSelection()){
+						s+=btnCheck[d].getText();
+					}
+					lblInfo.setText(s);
+				}
+				/*lblInfo.setText("Waiting....");
 				String locationPath = txtLocation.getText();
 				if(FileUtil.checkLocation(locationPath)){
 					if(comboTB.getText().equals("")){
@@ -152,7 +180,7 @@ public class JumpView extends ViewPart {
 						FileUtil.deleteDirectory(locationPath+"\\template");
 					}
 				}
-				else lblInfo.setText(txtLocation.getText()+"Wrong project location.");
+				else lblInfo.setText(txtLocation.getText()+"Wrong project location.");*/
 			}
 		});
 		btnGenerate.setBounds(416, 207, 75, 25);
@@ -171,6 +199,37 @@ public class JumpView extends ViewPart {
 		lblProjectLocation.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		lblProjectLocation.setBounds(22, 184, 100, 15);
 		lblProjectLocation.setText("Project Location");
+		
+		Button btnBrowse = new Button(parent, SWT.NONE);
+		btnBrowse.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				//TODO
+			}
+		});
+		btnBrowse.setBounds(416, 179, 75, 25);
+		btnBrowse.setText("Browse...");
+		
+		btnBrowse.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				DirectoryDialog directoryDialog = new DirectoryDialog(shell);
+
+				directoryDialog.setFilterPath(selectedDir);
+				directoryDialog.setMessage("Please select a directory and click OK");
+
+				String dir = directoryDialog.open();
+				if (dir != null) {
+					txtLocation.setText(dir);
+					selectedDir = dir;
+				}
+			}
+		});
+		
+		TextTable = new Text(parent, SWT.BORDER);
+		TextTable.setBounds(149, 209, 252, 21);
+		
+		composite2 = new Composite(parent, SWT.NONE | SWT.V_SCROLL);
+		composite2.setBounds(149, 236, 252, 147);
 		
 		
 		
