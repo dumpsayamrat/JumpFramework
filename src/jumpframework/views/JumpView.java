@@ -27,7 +27,6 @@ public class JumpView extends ViewPart {
 	private Panel panel;
 	private Button button;
 	private TextField text;
-	private Combo comboTB;
 	public static int i = 0;
 	private String db,user,pass;
 	private Text txtDatabase;
@@ -41,7 +40,6 @@ public class JumpView extends ViewPart {
 	private Text TextTable;
 	private Composite composite2;
 	private Button[] btnCheck;
-	private Button btnNewButton;
 	
 	public JumpView() {
 		
@@ -74,7 +72,6 @@ public class JumpView extends ViewPart {
 				mysql = new MySQL(txtDatabase.getText(), txtUser.getText(), txtPass.getText());
 				if (mysql.getConnection()){
 					String[] tables = mysql.getTablesName();
-					TextTable.setText("Select Table");
 					
 					btnCheck = new Button[tables.length];
 					for (int d = 0; d < btnCheck.length*10; d++) {
@@ -128,11 +125,7 @@ public class JumpView extends ViewPart {
 		lblInfo.setForeground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		lblInfo.setBackground(SWTResourceManager.getColor(SWT.COLOR_DARK_GREEN));
 		lblInfo.setFont(SWTResourceManager.getFont("Segoe UI", 16, SWT.BOLD));
-		lblInfo.setBounds(68, 500, 386, 70);
-		
-		comboTB = new Combo(parent, SWT.NONE);
-		comboTB.setItems(new String[] {});
-		comboTB.setBounds(149, 209, 252, 23);
+		lblInfo.setBounds(68, 400, 386, 70);
 		
 		Button btnGenerate = new Button(parent, SWT.NONE);
 		btnGenerate.addSelectionListener(new SelectionAdapter() {
@@ -225,11 +218,9 @@ public class JumpView extends ViewPart {
 			}
 		});
 		
-		TextTable = new Text(parent, SWT.BORDER);
-		TextTable.setBounds(149, 209, 252, 21);
 		
 		composite2 = new Composite(parent, SWT.NONE | SWT.V_SCROLL);
-		composite2.setBounds(149, 236, 252, 147);
+		composite2.setBounds(149, 209, 252, 147);
 		
 		
 		
