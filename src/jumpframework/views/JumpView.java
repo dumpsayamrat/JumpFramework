@@ -1,8 +1,5 @@
 package jumpframework.views;
 
-import java.awt.Panel;
-import java.awt.TextField;
-
 import jumpframework.createproject.CreateProject;
 import jumpframework.createproject.FileUtil;
 import jumpframework.createproject.InputSteamToFileApp;
@@ -11,8 +8,6 @@ import jumpframework.createproject.Writer;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.swt.widgets.Composite;
@@ -24,24 +19,20 @@ import org.eclipse.swt.events.SelectionAdapter;
 public class JumpView extends ViewPart {
 
 	private Label lblConfiguration,lblInfo;
-	private Panel panel;
-	private Button button;
-	private TextField text;
-	public static int i = 0;
-	private String db,user,pass;
+	private Composite composite2;
 	private Text txtDatabase;
 	private Text txtUser;
 	private Text txtPass;
 	private MySQL mysql;
 	private Text txtLocation;
-	Writer writer;
-
-	private String selectedDir;
-	private Composite composite2;
-	
 	private Button[] btnCheck;
 	private Button btnSelectAllTable;
 	private Button btnUnSelectAll;
+	
+	Writer writer;
+	
+	public static int i = 0;
+	private String selectedDir;
 	
 	public JumpView() {
 		
@@ -54,16 +45,13 @@ public class JumpView extends ViewPart {
 
 	public void createPartControl(Composite parent) {
 		parent.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		panel = new Panel();
 		parent.setLayout(null);
 		lblConfiguration = new Label(parent, 0);
 		lblConfiguration.setFont(SWTResourceManager.getFont("Segoe UI", 12, SWT.BOLD));
 		lblConfiguration.setText("JUMP Task");
 		lblConfiguration.setBounds(22, 20, 121, 24);
 		lblConfiguration.setAlignment(SWT.CENTER);
-		text = new TextField();
 		Shell shell = new Shell();
-		Color color = new Color(shell.getDisplay(), new RGB(255, 255, 0));
 		lblConfiguration.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		
 		Button btnConnect = new Button(parent, SWT.NONE);
@@ -116,11 +104,11 @@ public class JumpView extends ViewPart {
 		lblDatabasePassword.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		lblDatabasePassword.setBounds(22, 130, 101, 15);
 		
-		lblInfo = new Label(parent, SWT.BORDER);
+		lblInfo = new Label(parent, SWT.WRAP);
 		lblInfo.setForeground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		lblInfo.setBackground(SWTResourceManager.getColor(SWT.COLOR_DARK_GREEN));
-		lblInfo.setFont(SWTResourceManager.getFont("Segoe UI", 16, SWT.BOLD));
-		lblInfo.setBounds(68, 400, 386, 70);
+		lblInfo.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD));
+		lblInfo.setBounds(68, 400, 386, 106);
 		
 		Button btnGenerate = new Button(parent, SWT.NONE);
 		btnGenerate.setBounds(416, 330, 75, 25);
@@ -150,14 +138,14 @@ public class JumpView extends ViewPart {
 									writer = new Writer(tableName, "controller", locationPath, mysql);
 									writer = new Writer(tableName, "view", locationPath, mysql);
 									
-									textInfo += tableName+" has been generated.\n";
+									textInfo += tableName+", ";
 								}							
 							}
 							
 							//create new hibernate.cfg.xml
 							CreateProject.createHibernateConfig(txtLocation.getText());
 							
-							lblInfo.setText(textInfo+"Generation Success.");
+							lblInfo.setText(textInfo+" has been generated.");
 						}else{
 							lblInfo.setText("Connection Failed.");
 						}
