@@ -15,7 +15,7 @@ public class Write {
 	private Map<String, String> mapNameProperties;
 	private String tableName;
 	/*
-	 * all of field in table : array 
+	 * all field in table : array 
 	 */
 	private String[][] fields;
 	
