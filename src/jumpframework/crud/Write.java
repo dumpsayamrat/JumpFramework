@@ -239,8 +239,7 @@ public class Write {
 						"() != 0) mapSearch.put(\""+fields[i][0].toLowerCase()+
 						"\", String.valueOf("+tableName.toLowerCase()+".get"+WordUtils.capitalize(fields[i][0])+"()));\n";
 			}else if(fields[i][1].matches("INTEGER|BIGINT|FLOAT|REAL|DOUBLE")){
-				sCurrentLine += "\t\tif(!"+tableName.toLowerCase()+".get"+WordUtils.capitalize(fields[i][0])+
-						"().isEmpty()) mapSearch.put(\""+fields[i][0].toLowerCase()+
+				sCurrentLine += "\t\tif(String.valueOf("+tableName.toLowerCase()+".get"+WordUtils.capitalize(fields[i][0])+"()) != null) mapSearch.put(\""+fields[i][0].toLowerCase()+
 						"\", String.valueOf("+tableName.toLowerCase()+".get"+WordUtils.capitalize(fields[i][0])+"()));\n";
 			}else{
 				sCurrentLine += "\t\tif(!"+tableName.toLowerCase()+".get"+WordUtils.capitalize(fields[i][0])+
