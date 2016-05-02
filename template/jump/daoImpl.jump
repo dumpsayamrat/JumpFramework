@@ -60,9 +60,13 @@ public class ${nameCapitalize}DaoImpl implements ${nameCapitalize}Dao {
 				e1.printStackTrace();
 			}
 
-			if (type.matches("int|double|float")) {
+			if (type.equals("int")) {
 				cr.add(Restrictions.eq(key, Integer.parseInt(val)));
-			} else {
+			} else if(type.equals("double")){
+				cr.add(Restrictions.eq(key, Double.parseDouble(val)));
+			}else if(type.equals("float")){
+				cr.add(Restrictions.eq(key, Float.parseFloat(val)));
+			}else{
 				cr.add(Restrictions.ilike(key, attributes.get(key)));
 			}
 
