@@ -10,9 +10,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.events.SelectionAdapter;
 
@@ -54,15 +51,24 @@ public class JumpView extends ViewPart {
 		Shell shell = new Shell();
 		lblConfiguration.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		
+		composite2 = new Composite(parent, SWT.NONE | SWT.V_SCROLL);
+		composite2.setBounds(149, 209, 252, 147);
+		composite2.setEnabled(true);
+		
 		Button btnConnect = new Button(parent, SWT.NONE);
 		btnConnect.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				lblInfo.setText("Waiting....");
+				Control[] c = composite2.getChildren();
+				System.out.println("first check children.");
+				for (Control c1 : c) {
+					System.out.println(c1.toString());
+					c1.dispose();
+				}
 				mysql = new MySQL(txtDatabase.getText(), txtUser.getText(), txtPass.getText());
 				if (mysql.getConnection()){
-					String[] tables = mysql.getTablesName();
-					
+					String[] tables = mysql.getTablesName();					
 					btnCheck = new Button[tables.length];
 					for (int d = 0; d < btnCheck.length; d++) {
 						
@@ -73,6 +79,10 @@ public class JumpView extends ViewPart {
 					lblInfo.setText("Connection Success.");
 				}
 				else lblInfo.setText("Connection Failed.");
+				System.out.println("second check children.");
+				for (Control c1 : c) {
+					System.out.println(c1.toString());
+				}
 			}
 		});
 		btnConnect.setBounds(416, 125, 75, 25);
@@ -227,8 +237,7 @@ public class JumpView extends ViewPart {
 			}
 		});
 		
-		composite2 = new Composite(parent, SWT.NONE | SWT.V_SCROLL);
-		composite2.setBounds(149, 209, 252, 147);
+		
 		
 		
 		
