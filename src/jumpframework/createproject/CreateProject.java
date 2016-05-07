@@ -217,7 +217,7 @@ public class CreateProject {
 			
 			fw.write("jdbc.driverClassName=com.mysql.jdbc.Driver\n");
 			fw.write("jdbc.dialect=org.hibernate.dialect.MySQLDialect\n");
-			fw.write("jdbc.databaseurl="+connection+"\n");
+			fw.write("jdbc.databaseurl="+connection+"?characterEncoding=UTF-8\n");
 			fw.write("jdbc.username="+user+"\n");
 			fw.write("jdbc.password="+pass);
 			

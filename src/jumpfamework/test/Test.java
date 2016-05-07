@@ -5,23 +5,21 @@ import java.util.Map;
 
 import org.apache.commons.lang3.text.WordUtils;
 
+import jumpframework.createproject.MySQL;
+
 public class Test {
 	private int num;
 	
 	public static void main(String[] args) {
-		String path = System.getProperty("user.dir");
-		String[] tmp = path.split("\\\\");
-		path = tmp[tmp.length-1];
-		System.out.println(path);
-		String tableName = "employee";
-		String sCurrentLine = "\t\tif(String.valueOf("+tableName.toLowerCase()+".get"+WordUtils.capitalize("de_id")+"()) != null) mapSearch.put(\""+"de_id".toLowerCase()+
-				"\", String.valueOf("+tableName.toLowerCase()+".get"+WordUtils.capitalize("de_id")+"()));\n";
-		//int num = 0;
-		Test t = new Test();
-		t.setNum(5);
-		if(String.valueOf(t.getNum()).toString()!=null){
-			System.out.println(!String.valueOf(t.getNum()).toString().isEmpty());
-			System.out.println(sCurrentLine);
+		
+		MySQL mySql = new MySQL("jdbc:mysql://localhost/employee", "spring", "1234");
+		
+		for (String t : mySql.getTablesName()) {
+			System.out.println(t);
+			String[][] s = mySql.getFields(t);
+			for(int i=0;i<s.length;i++){
+				System.out.println("\t"+s[i][0]+":"+s[i][1]+":"+s[i][2]);
+			}
 		}
 		
 		

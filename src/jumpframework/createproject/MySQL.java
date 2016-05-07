@@ -70,11 +70,22 @@ public class MySQL {
 		try{
 			DatabaseMetaData md = connect.getMetaData();
 			ResultSet rs = md.getColumns(null, null, tableName, null);
+			ResultSet rsPrimary = md.getPrimaryKeys(null, null, tableName);
+			ResultSet rsForeign = md.getExportedKeys(null, null, tableName);
+			ResultSet rs1 = md.getImportedKeys(null, null, tableName);
 			while (rs.next()) {
 				tmpField.add(rs.getString(4)+","
 							+getDataType().get(Integer.parseInt(rs.getString(5)))+","
 							+rs.getString(23));
-				
+			}
+			while(rsPrimary.next()){
+				System.out.println(rsPrimary.getString(4)+":"+rsPrimary.getString(3));
+			}
+			while(rsForeign.next()){
+				System.out.println(rsForeign.getString(7)+":"+rsForeign.getString(8));
+			}
+			while(rs1.next()){
+				System.out.println(rs1.getString(7)+":"+rs1.getString(8));
 			}
 			fields = new String[tmpField.size()][3];
 			for(int i=0; i<fields.length; i++){	
