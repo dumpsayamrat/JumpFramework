@@ -32,7 +32,7 @@ pageEncoding="UTF-8"%>
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="<c:url value='/employee' />">JUMP FRAMEWORK</a>
+				<a class="navbar-brand" href="<c:url value='/' />">JUMP FRAMEWORK</a>
 			</div>
 
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">

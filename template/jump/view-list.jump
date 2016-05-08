@@ -50,7 +50,17 @@
 		        			if(j==0){
 		        				id = value; 
 		        			}
-		        			rowContent.append("<td>"+ value +"</td>");
+		        			if(typeof value === 'object'){
+		        				var property = [];
+		        				var k = 0;
+		        				for (var name in value) {
+		        					property[k] = name;
+		        					k++;
+		        				}
+		        				rowContent.append("<td>"+ value[property[1]] +"</td>");
+		        			}else{
+		        				rowContent.append("<td>"+ value +"</td>");
+		        			}
 		        			j++;
 		        		});
 		        		var pathName = window.location.pathname.split("/");

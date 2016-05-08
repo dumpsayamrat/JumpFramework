@@ -12,6 +12,8 @@ import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.hibernate.criterion.Example;
+import org.hibernate.criterion.MatchMode;
 
 import com.spring.dao.${nameCapitalize}Dao;
 import com.spring.model.${modelName};
@@ -33,12 +35,12 @@ public class ${nameCapitalize}DaoImpl implements ${nameCapitalize}Dao {
 	}
 
 	@Override
-	public void delete(int ${nameLowerCase}Id) {
+	public void delete(${typePrimaryKey} ${nameLowerCase}Id) {
 		session.getCurrentSession().delete(get${nameCapitalize}(${nameLowerCase}Id));
 	}
 
 	@Override
-	public ${modelName} get${nameCapitalize}(int ${nameLowerCase}Id) {
+	public ${modelName} get${nameCapitalize}(${typePrimaryKey} ${nameLowerCase}Id) {
 		return (${modelName}) session.getCurrentSession().get(${modelName}.class, ${nameLowerCase}Id);
 	}
 
@@ -48,30 +50,11 @@ public class ${nameCapitalize}DaoImpl implements ${nameCapitalize}Dao {
 	}
 
 	@Override
-	public List getSearch(Map<String, String> attributes) {
-		Criteria cr = session.getCurrentSession().createCriteria(${modelName}.class);
-
-		for (String key : attributes.keySet()) {
-			String val = attributes.get(key);
-			String type = null;
-			try {
-				type = ${modelName}.class.getDeclaredField(key).getType().toString();
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-
-			if (type.equals("int")) {
-				cr.add(Restrictions.eq(key, Integer.parseInt(val)));
-			} else if(type.equals("double")){
-				cr.add(Restrictions.eq(key, Double.parseDouble(val)));
-			}else if(type.equals("float")){
-				cr.add(Restrictions.eq(key, Float.parseFloat(val)));
-			}else{
-				cr.add(Restrictions.ilike(key, attributes.get(key)));
-			}
-
-		}
-		return cr.list();
+	public List getSearch(${modelName} ${nameLowerCase}) {
+		return session.getCurrentSession().
+				createCriteria(${modelName}.class).add(Example.create(${nameLowerCase}).enableLike(MatchMode.ANYWHERE))
+				${loopMapSearch}
+				.list();
 	}
 
 }

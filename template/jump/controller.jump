@@ -18,19 +18,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spring.model.${modelName};
 import com.spring.service.${nameCapitalize}Service;
+${loopImportService}
 
 @Controller
 public class ${nameCapitalize}Controller {
 
 	@Autowired
-	private ${nameCapitalize}Service ${nameLowerCase}Service;
+	private ${nameCapitalize}Service ${nameLowerCase}Service;	
+	${loopAutowire}
 
 	@RequestMapping(value = "/${nameLowerCase}")
 	public String list(Map<String, Object> map){
 		String title = "${nameCapitalize} | List";
 		map.put("title", title);
 		
-		map.put("${nameLowerCase}List", ${nameLowerCase}Service.getSearch(new HashMap<>()));
+		map.put("${nameLowerCase}List", ${nameLowerCase}Service.getAll${nameCapitalize}());
 		map.put("${nameLowerCase}",new ${modelName}());
 		return "${nameLowerCase}/list";
 	}
@@ -39,7 +41,7 @@ public class ${nameCapitalize}Controller {
 	public String add(Map<String, Object> map){
 		String title = "${nameCapitalize} | Add";
 		map.put("title", title);
-		
+		${loopForiegnList}
 		${modelName} ${nameLowerCase} = new ${modelName}();
 		map.put("${nameLowerCase}", ${nameLowerCase});
 		return "${nameLowerCase}/add";
@@ -55,7 +57,7 @@ public class ${nameCapitalize}Controller {
 	public String edit(@PathVariable("id") int id, Map<String, Object> map){
 		String title = "${nameCapitalize} | Update";
 		map.put("title", title);
-		
+		${loopForiegnList}
 		map.put("${nameLowerCase}", ${nameLowerCase}Service.get${nameCapitalize}(id));
 		return "${nameLowerCase}/update";
 	}
@@ -88,11 +90,9 @@ public class ${nameCapitalize}Controller {
 	public List<${modelName}> search(@ModelAttribute ${modelName} ${nameLowerCase}, @RequestParam(required = false) String action,
 			Map<String, Object> map){
 		
-		Map<String ,String> mapSearch = new HashMap<String, String>();
-		${loopMapSearch}
 		
 		List<${modelName}> list${nameCapitalize} = new ArrayList<${modelName}>();
-		list${nameCapitalize} = ${nameLowerCase}Service.getSearch(mapSearch);
+		list${nameCapitalize} = ${nameLowerCase}Service.getSearch(${nameLowerCase});
 		return list${nameCapitalize};
 	}
 

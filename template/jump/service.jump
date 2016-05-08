@@ -10,9 +10,9 @@ public interface ${nameCapitalize}Service {
 
 	public void add(${modelName} ${nameLowerCase});
 	public void edit(${modelName} ${nameLowerCase});
-	public void delete(int ${nameLowerCase}Id);
-	public ${modelName} get${nameCapitalize}(int ${nameLowerCase}Id);
+	public void delete(${typePrimaryKey} ${nameLowerCase}Id);
+	public ${modelName} get${nameCapitalize}(${typePrimaryKey} ${nameLowerCase}Id);
 	public List getAll${nameCapitalize}();
-	public List getSearch(Map<String, String> mapSearch);
+	public List getSearch(${modelName} ${nameLowerCase});
 
 }

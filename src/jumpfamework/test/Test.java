@@ -18,7 +18,7 @@ public class Test {
 			System.out.println(t);
 			String[][] s = mySql.getFields(t);
 			for(int i=0;i<s.length;i++){
-				System.out.println("\t"+s[i][0]+":"+s[i][1]+":"+s[i][2]);
+				System.out.println("\t"+s[i][0]+":"+s[i][1]+":"+s[i][2]+":"+s[i][3]+":"+s[i][4]+":"+s[i][5]+":"+s[i][6]);
 			}
 		}
 		

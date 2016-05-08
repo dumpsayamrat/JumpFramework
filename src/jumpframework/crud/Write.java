@@ -8,7 +8,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+
 import org.apache.commons.lang3.text.WordUtils;
+
 
 public class Write {
 	
@@ -130,14 +133,25 @@ public class Write {
 		}
 		return content;
 	}
-
+	
+	/**
+	 * name for set data in .jump file
+	 * @param tableName2
+	 * @return
+	 */
 	private Map<String, String> getNameForProperties(String tableName2) {
 		Map<String, String> map = new HashMap<>();
 		map.put("modelName", WordUtils.capitalize(tableName2));
 		map.put("nameCapitalize", WordUtils.capitalize(tableName2));
 		map.put("nameLowerCase", tableName2.toLowerCase());
 		map.put("tableName", tableName2);
-		map.put("namePrimaryKey", WordUtils.capitalize(fields[0][0]));
+		for(int i=0;i<fields.length;i++){
+			if(fields[i][3].equals("YES")){
+				map.put("namePrimaryKey", WordUtils.capitalize(fields[i][0]));
+				map.put("typePrimaryKey", getTypeVariable().get(fields[i][1]));
+			}
+		}
+		
 		return map;
 	}
 
@@ -164,6 +178,15 @@ public class Write {
 			case "loopFormUpdate":
 				sCurrentLine = loopFormUpdate(sCurrentLine);
 				break;
+			case "loopAutowire":
+				sCurrentLine = loopAutowire(sCurrentLine);
+				break;
+			case "loopForiegnList":
+				sCurrentLine = loopForiegnList(sCurrentLine);
+				break;
+			case "loopImportService":
+				sCurrentLine = loopImportService(sCurrentLine);
+				break;
 			default:
 				if(mapNameProperties.containsKey(nameProperty)){
 					sCurrentLine = sCurrentLine.replace("${"+nameProperty+"}", mapNameProperties.get(nameProperty) );
@@ -179,6 +202,39 @@ public class Write {
 	}
 
 
+	private String loopImportService(String sCurrentLine) {
+		sCurrentLine = "";
+		for(int i=0;i<fields.length;i++){
+			if(!fields[i][4].equals("NO")){
+				sCurrentLine += "import com.spring.service."+WordUtils.capitalize(fields[i][4])+"Service;\n";
+			}
+		}
+		return sCurrentLine;
+	}
+
+	private String loopForiegnList(String sCurrentLine) {
+		sCurrentLine = "";
+		for(int i=0;i<fields.length;i++){
+			if(!fields[i][4].equals("NO")){
+				sCurrentLine += "\t\tmap.put(\""+fields[i][4].toLowerCase()+"List\", "+fields[i][4].toLowerCase()+
+						"Service.getAll"+WordUtils.capitalize(fields[i][4])+"());\n";
+			}
+		}
+		return sCurrentLine;
+	}
+
+	private String loopAutowire(String sCurrentLine) {
+		sCurrentLine = "";
+		for(int i=0;i<fields.length;i++){
+			if(!fields[i][4].equals("NO")){
+				sCurrentLine += "\t@Autowired\n";
+				sCurrentLine += "\tprivate "+WordUtils.capitalize(fields[i][4])+"Service "+fields[i][4].toLowerCase()+
+									"Service;\n";
+			}
+		}
+		return sCurrentLine;
+	}
+
 	/*
 	 * just for test.
 	 */
@@ -192,15 +248,24 @@ public class Write {
 		sCurrentLine = "";
 		sCurrentLine += wT(6)+"<form:form action=\"${addAction}\" method=\"POST\" commandName=\""+tableName.toLowerCase()+"\" class=\"form\">\n";
 		for(int i=0;i<fields.length;i++){
-			sCurrentLine += wT(7)+"<div class=\"form-group\">\n";
-			sCurrentLine += wT(8)+"<form:label path=\""+fields[i][0].toLowerCase()+"\">"+WordUtils.capitalize(fields[i][0])+": </form:label>\n";
-			if(getTypeHtml().get(fields[i][1]).equals("textarea")){
-				sCurrentLine += wT(8)+"<form:textarea path=\""+fields[i][0].toLowerCase()+"\" class=\"form-control\"/>\n";
+			if(!fields[i][4].equals("NO")){
+				sCurrentLine += wT(7)+"<div class=\"form-group\">\n";
+				sCurrentLine += wT(8)+"<form:label path=\""+fields[i][4].toLowerCase()+"."+fields[i][6].toLowerCase()+"\">"+WordUtils.capitalize(fields[i][0])+": </form:label>\n";
+				sCurrentLine += wT(8)+"<form:select path=\""+fields[i][4].toLowerCase()+"."+fields[i][6].toLowerCase()+"\" class=\"form-control\">\n";
+				sCurrentLine += wT(9)+"<form:options items=\"${"+fields[i][4].toLowerCase()+"List}\" itemValue=\""+fields[i][6].toLowerCase()+"\" itemLabel=\""+fields[i][5].toLowerCase()+"\"  />\n";
+				sCurrentLine += wT(8)+"</form:select>";
+				sCurrentLine += wT(7)+"</div>\n";
 			}else{
-				sCurrentLine += wT(8)+"<form:input path=\""+fields[i][0].toLowerCase()+"\" class=\"form-control\" type=\""+getTypeHtml().get(fields[i][1])+"\" />\n";
+				sCurrentLine += wT(7)+"<div class=\"form-group\">\n";
+				sCurrentLine += wT(8)+"<form:label path=\""+fields[i][0].toLowerCase()+"\">"+WordUtils.capitalize(fields[i][0])+": </form:label>\n";
+				if(getTypeHtml().get(fields[i][1]).equals("textarea")){
+					sCurrentLine += wT(8)+"<form:textarea path=\""+fields[i][0].toLowerCase()+"\" class=\"form-control\"/>\n";
+				}else{
+					sCurrentLine += wT(8)+"<form:input path=\""+fields[i][0].toLowerCase()+"\" class=\"form-control\" type=\""+getTypeHtml().get(fields[i][1])+"\" />\n";
+				}
+				
+				sCurrentLine += wT(7)+"</div>\n";
 			}
-			
-			sCurrentLine += wT(7)+"</div>\n";
 		}
 		
 		sCurrentLine += wT(7)+"<input type=\"submit\" name=\"action\" value=\"Add\" />\n";
@@ -213,15 +278,24 @@ public class Write {
 		sCurrentLine = "";
 		sCurrentLine += wT(6)+"<form:form action=\"${addAction}\" method=\"POST\" commandName=\""+tableName.toLowerCase()+"\" class=\"form\">\n";
 		for(int i=0;i<fields.length;i++){
-			sCurrentLine += wT(7)+"<div class=\"form-group\">\n";
-			sCurrentLine += wT(8)+"<form:label path=\""+fields[i][0].toLowerCase()+"\">"+WordUtils.capitalize(fields[i][0])+": </form:label>\n";
-			if(getTypeHtml().get(fields[i][1]).equals("textarea")){
-				sCurrentLine += wT(8)+"<form:textarea path=\""+fields[i][0].toLowerCase()+"\" class=\"form-control\"/>\n";
+			if(!fields[i][4].equals("NO")){
+				sCurrentLine += wT(7)+"<div class=\"form-group\">\n";
+				sCurrentLine += wT(8)+"<form:label path=\""+fields[i][4].toLowerCase()+"."+fields[i][6].toLowerCase()+"\">"+WordUtils.capitalize(fields[i][0])+": </form:label>\n";
+				sCurrentLine += wT(8)+"<form:select path=\""+fields[i][4].toLowerCase()+"."+fields[i][6].toLowerCase()+"\" class=\"form-control\">\n";
+				sCurrentLine += wT(9)+"<form:options items=\"${"+fields[i][4].toLowerCase()+"List}\" itemValue=\""+fields[i][6].toLowerCase()+"\" itemLabel=\""+fields[i][5].toLowerCase()+"\"  />\n";
+				sCurrentLine += wT(8)+"</form:select>";
+				sCurrentLine += wT(7)+"</div>\n";
 			}else{
-				sCurrentLine += wT(8)+"<form:input path=\""+fields[i][0].toLowerCase()+"\" class=\"form-control\" type=\""+getTypeHtml().get(fields[i][1])+"\" />\n";
+				sCurrentLine += wT(7)+"<div class=\"form-group\">\n";
+				sCurrentLine += wT(8)+"<form:label path=\""+fields[i][0].toLowerCase()+"\">"+WordUtils.capitalize(fields[i][0])+": </form:label>\n";
+				if(getTypeHtml().get(fields[i][1]).equals("textarea")){
+					sCurrentLine += wT(8)+"<form:textarea path=\""+fields[i][0].toLowerCase()+"\" class=\"form-control\"/>\n";
+				}else{
+					sCurrentLine += wT(8)+"<form:input path=\""+fields[i][0].toLowerCase()+"\" class=\"form-control\" type=\""+getTypeHtml().get(fields[i][1])+"\" />\n";
+				}
+				
+				sCurrentLine += wT(7)+"</div>\n";
 			}
-			
-			sCurrentLine += wT(7)+"</div>\n";
 		}
 		
 		sCurrentLine += wT(7)+"<input type=\"submit\" name=\"action\" value=\"Edit\" />\n";
@@ -234,17 +308,9 @@ public class Write {
 		sCurrentLine = "";
 		// loop Map Search
 		for(int i=0; i<fields.length; i++){
-			if(fields[i][2].equals("YES")){
-				sCurrentLine += "\t\tif("+tableName.toLowerCase()+".get"+WordUtils.capitalize(fields[i][0])+
-						"() != 0) mapSearch.put(\""+fields[i][0].toLowerCase()+
-						"\", String.valueOf("+tableName.toLowerCase()+".get"+WordUtils.capitalize(fields[i][0])+"()));\n";
-			}else if(fields[i][1].matches("INTEGER|BIGINT|FLOAT|REAL|DOUBLE")){
-				sCurrentLine += "\t\tif("+tableName.toLowerCase()+".get"+WordUtils.capitalize(fields[i][0])+"() != 0) mapSearch.put(\""+fields[i][0].toLowerCase()+
-						"\", String.valueOf("+tableName.toLowerCase()+".get"+WordUtils.capitalize(fields[i][0])+"()));\n";
-			}else{
-				sCurrentLine += "\t\tif(!"+tableName.toLowerCase()+".get"+WordUtils.capitalize(fields[i][0])+
-						"().isEmpty()) mapSearch.put(\""+fields[i][0].toLowerCase()+
-						"\", \"%\"+ "+tableName.toLowerCase()+".get"+WordUtils.capitalize(fields[i][0])+"()+\"%\");\n";
+			if(!fields[i][4].equals("NO")){
+				sCurrentLine += wT(4)+".createCriteria(\""+fields[i][4].toLowerCase()+"\").add(Example.create("+tableName.toLowerCase()+".get"
+							+WordUtils.capitalize(fields[i][4])+"()).enableLike(MatchMode.ANYWHERE))\n";
 			}
 		}
 		return sCurrentLine;
@@ -254,17 +320,33 @@ public class Write {
 		sCurrentLine = "";
 		// writes getter setter
 		for(int i=0; i<fields.length; i++){
-			//getter
-			sCurrentLine += "\tpublic "+getTypeVariable().get(fields[i][1])+" get"+WordUtils.capitalize(fields[i][0])+"() {\n";
-			sCurrentLine += "\t\treturn "+fields[i][0].toLowerCase()+";\n";
-			sCurrentLine += "\t}\n\n";
 			
-			//setter
-			sCurrentLine += "\tpublic void set"+WordUtils.capitalize(fields[i][0])
-						+"("+getTypeVariable().get(fields[i][1])+" "
-						+fields[i][0].toLowerCase()+") {\n";
-			sCurrentLine += "\t\tthis."+fields[i][0].toLowerCase()+" = "+fields[i][0].toLowerCase()+";\n";
-			sCurrentLine += "\t}\n\n";
+			if(!fields[i][4].equals("NO")){
+				//getter
+				sCurrentLine += "\tpublic "+WordUtils.capitalize(fields[i][4])+" get"+WordUtils.capitalize(fields[i][4])+"() {\n";
+				sCurrentLine += "\t\treturn this."+fields[i][4].toLowerCase()+";\n";
+				sCurrentLine += "\t}\n\n";
+				
+				//setter
+				sCurrentLine += "\tpublic void set"+WordUtils.capitalize(fields[i][4])
+							+"("+WordUtils.capitalize(fields[i][4])+" "
+							+fields[i][4].toLowerCase()+") {\n";
+				sCurrentLine += "\t\tthis."+fields[i][4].toLowerCase()+" = "+fields[i][4].toLowerCase()+";\n";
+				sCurrentLine += "\t}\n\n";
+			}else{
+				//getter
+				sCurrentLine += "\tpublic "+getTypeVariable().get(fields[i][1])+" get"+WordUtils.capitalize(fields[i][0])+"() {\n";
+				sCurrentLine += "\t\treturn this."+fields[i][0].toLowerCase()+";\n";
+				sCurrentLine += "\t}\n\n";
+				
+				//setter
+				sCurrentLine += "\tpublic void set"+WordUtils.capitalize(fields[i][0])
+							+"("+getTypeVariable().get(fields[i][1])+" "
+							+fields[i][0].toLowerCase()+") {\n";
+				sCurrentLine += "\t\tthis."+fields[i][0].toLowerCase()+" = "+fields[i][0].toLowerCase()+";\n";
+				sCurrentLine += "\t}\n\n";
+			}
+			
 			
 		}
 		return sCurrentLine;
@@ -273,22 +355,30 @@ public class Write {
 
 	private String loopAttribute(String sCurrentLine) {
 		sCurrentLine = "";
-		//  writes properties || TODO This not finish, it should check primary Key;
 		for(int i=0; i<fields.length; i++){
-			if(fields[i][2].equals("YES")){
+			if(!fields[i][4].equals("NO")){
+				sCurrentLine += "\t@ManyToOne\n";
+				sCurrentLine += "\t@JoinColumn(name = \""+fields[i][0]+"\")\n";
+				sCurrentLine += "\tprivate "+WordUtils.capitalize(fields[i][4])+" "+fields[i][4].toLowerCase()+";\n\n";
+			}else if(fields[i][3].equals("YES")){
 				sCurrentLine += "\t@Id\n";
 				sCurrentLine += "\t@Column(name = \""+fields[i][0]+"\")\n";
-				sCurrentLine += "\t@GeneratedValue(strategy = GenerationType.AUTO)\n";
+				
+				if(fields[i][2].equals("YES")) sCurrentLine += "\t@GeneratedValue(strategy = GenerationType.AUTO)\n";
+				
 				sCurrentLine += "\tprivate "+getTypeVariable().get(fields[i][1])+" "+fields[i][0].toLowerCase()+";\n\n";
 			}else{
 				sCurrentLine += "\t@Column(name = \""+fields[i][0]+"\")\n";
+				
+				if(fields[i][2].equals("YES")) sCurrentLine += "\t@GeneratedValue(strategy = GenerationType.AUTO)\n";
+				
 				sCurrentLine += "\tprivate "+getTypeVariable().get(fields[i][1])+" "+fields[i][0].toLowerCase()+";\n\n";
 			}
 		}
 		return sCurrentLine;		
 	}
 	
-private String loopTable(String sCurrentLine) {
+	private String loopTable(String sCurrentLine) {
 		
 		sCurrentLine = "";
 		
@@ -296,7 +386,12 @@ private String loopTable(String sCurrentLine) {
 		// writes <thead>
 		sCurrentLine += wT(7)+"<thead>\n";
 		for(int i=0;i<fields.length;i++){
-			sCurrentLine += wT(8)+"<th>"+WordUtils.capitalize(fields[i][0])+"</th>\n";
+			if(!fields[i][4].equals("NO")){
+				sCurrentLine += wT(8)+"<th>"+WordUtils.capitalize(fields[i][4])+"</th>\n";
+			}else{
+				sCurrentLine += wT(8)+"<th>"+WordUtils.capitalize(fields[i][0])+"</th>\n";
+			}
+			
 		}			
 		sCurrentLine += wT(8)+"<th>manage</th>\n";
 		
@@ -307,7 +402,13 @@ private String loopTable(String sCurrentLine) {
 				"Search\"  method=\"POST\" modelAttribute=\""+tableName.toLowerCase()+
 				"\" commandName=\""+tableName.toLowerCase()+"\">\n";
 		for(int i=0; i<fields.length; i++){
-			sCurrentLine += wT(10)+"<td><form:input path=\""+fields[i][0].toLowerCase()+"\" class=\"form-control\" type=\""+getTypeHtml().get(fields[i][1])+"\" /></td>\n";
+			if(!fields[i][4].equals("NO")){
+				sCurrentLine += wT(10)+"<td><form:input path=\""+fields[i][4].toLowerCase()+"."+
+						fields[i][5].toLowerCase()+"\" class=\"form-control\" type=\"text\" /></td>\n";
+			}else{
+				sCurrentLine += wT(10)+"<td><form:input path=\""+fields[i][0].toLowerCase()+"\" class=\"form-control\" type=\""+getTypeHtml().get(fields[i][1])+"\" /></td>\n";
+			}
+			
 		}
 		sCurrentLine += wT(9)+"</form:form>\n";
 		sCurrentLine += wT(8)+"</tr>\n";
@@ -318,7 +419,12 @@ private String loopTable(String sCurrentLine) {
 		sCurrentLine += wT(8)+"<c:forEach items=\"${"+tableName.toLowerCase()+"List}\" var=\""+tableName.toLowerCase()+"\">\n";
 		sCurrentLine += wT(9)+"<tr>\n";
 		for(int i=0;i<fields.length;i++){
-			sCurrentLine += wT(10)+"<td>${"+tableName.toLowerCase()+"."+fields[i][0].toLowerCase()+"}</td>\n";
+			if(!fields[i][4].equals("NO")){
+				sCurrentLine += wT(10)+"<td>${"+tableName.toLowerCase()+"."+fields[i][4].toLowerCase()+"."+fields[i][5].toLowerCase()+"}</td>\n";
+			}else{
+				sCurrentLine += wT(10)+"<td>${"+tableName.toLowerCase()+"."+fields[i][0].toLowerCase()+"}</td>\n";
+			}
+			
 		}
 		sCurrentLine += wT(10)+"<td>\n";
 		sCurrentLine += wT(11)+"<a href=\"<c:url value='/"+tableName.toLowerCase()+"/${"+tableName.toLowerCase()+"."+fields[0][0].toLowerCase()+"}/update' />\" >Update</a>\n";
