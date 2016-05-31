@@ -323,24 +323,24 @@ public class Write {
 			
 			if(!fields[i][4].equals("NO")){
 				//getter
-				sCurrentLine += "\tpublic "+WordUtils.capitalize(fields[i][4])+" get"+WordUtils.capitalize(fields[i][4])+"() {\n";
+				sCurrentLine += "\tpublic "+WordUtils.capitalize(fields[i][4])+" get"+WordUtils.capitalize(fields[i][4].toLowerCase())+"() {\n";
 				sCurrentLine += "\t\treturn this."+fields[i][4].toLowerCase()+";\n";
 				sCurrentLine += "\t}\n\n";
 				
 				//setter
-				sCurrentLine += "\tpublic void set"+WordUtils.capitalize(fields[i][4])
+				sCurrentLine += "\tpublic void set"+WordUtils.capitalize(fields[i][4].toLowerCase())
 							+"("+WordUtils.capitalize(fields[i][4])+" "
 							+fields[i][4].toLowerCase()+") {\n";
 				sCurrentLine += "\t\tthis."+fields[i][4].toLowerCase()+" = "+fields[i][4].toLowerCase()+";\n";
 				sCurrentLine += "\t}\n\n";
 			}else{
 				//getter
-				sCurrentLine += "\tpublic "+getTypeVariable().get(fields[i][1])+" get"+WordUtils.capitalize(fields[i][0])+"() {\n";
+				sCurrentLine += "\tpublic "+getTypeVariable().get(fields[i][1])+" get"+WordUtils.capitalize(fields[i][0].toLowerCase())+"() {\n";
 				sCurrentLine += "\t\treturn this."+fields[i][0].toLowerCase()+";\n";
 				sCurrentLine += "\t}\n\n";
 				
 				//setter
-				sCurrentLine += "\tpublic void set"+WordUtils.capitalize(fields[i][0])
+				sCurrentLine += "\tpublic void set"+WordUtils.capitalize(fields[i][0].toLowerCase())
 							+"("+getTypeVariable().get(fields[i][1])+" "
 							+fields[i][0].toLowerCase()+") {\n";
 				sCurrentLine += "\t\tthis."+fields[i][0].toLowerCase()+" = "+fields[i][0].toLowerCase()+";\n";
@@ -410,6 +410,7 @@ public class Write {
 			}
 			
 		}
+		sCurrentLine += wT(10)+"<td> </td>\n";
 		sCurrentLine += wT(9)+"</form:form>\n";
 		sCurrentLine += wT(8)+"</tr>\n";
 		// end input search	

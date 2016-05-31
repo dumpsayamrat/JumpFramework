@@ -7,7 +7,10 @@ import jumpframework.createproject.MySQL;
 import jumpframework.createproject.Writer;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.wb.swt.SWTResourceManager;
@@ -15,8 +18,9 @@ import org.eclipse.swt.events.SelectionAdapter;
 
 public class JumpView extends ViewPart {
 
-	private Label lblConfiguration,lblInfo;
+	private Label lblConfiguration,lblInfo,lblNewLabel;
 	private Composite composite2;
+	//private ScrolledComposite scrolledComposite;
 	private Text txtDatabase;
 	private Text txtUser;
 	private Text txtPass;
@@ -30,6 +34,7 @@ public class JumpView extends ViewPart {
 	
 	public static int i = 0;
 	private String selectedDir;
+	private Label label;
 	
 	public JumpView() {
 		
@@ -46,14 +51,19 @@ public class JumpView extends ViewPart {
 		lblConfiguration = new Label(parent, 0);
 		lblConfiguration.setFont(SWTResourceManager.getFont("Segoe UI", 12, SWT.BOLD));
 		lblConfiguration.setText("JUMP Task");
-		lblConfiguration.setBounds(22, 20, 121, 24);
-		lblConfiguration.setAlignment(SWT.CENTER);
+		lblConfiguration.setBounds(10, 10, 121, 24);
 		Shell shell = new Shell();
 		lblConfiguration.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		
-		composite2 = new Composite(parent, SWT.NONE | SWT.V_SCROLL);
-		composite2.setBounds(149, 209, 252, 147);
+		//scrolledComposite.setSize(252, 147);
+		composite2 = new Composite(parent, SWT.NONE);
+		composite2.setBackground(getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
+		composite2.setBounds(10, 280, 333, 147);
+		//composite2.
 		composite2.setEnabled(true);
+		
+		
+		
 		
 		Button btnConnect = new Button(parent, SWT.NONE);
 		btnConnect.addSelectionListener(new SelectionAdapter() {
@@ -61,7 +71,6 @@ public class JumpView extends ViewPart {
 			public void widgetSelected(SelectionEvent e) {
 				lblInfo.setText("Waiting....");
 				Control[] c = composite2.getChildren();
-				System.out.println("first check children.");
 				for (Control c1 : c) {
 					System.out.println(c1.toString());
 					c1.dispose();
@@ -70,58 +79,88 @@ public class JumpView extends ViewPart {
 				if (mysql.getConnection()){
 					String[] tables = mysql.getTablesName();					
 					btnCheck = new Button[tables.length];
+					int y = 0;
+					int x = 0;
 					for (int d = 0; d < btnCheck.length; d++) {
 						
-						btnCheck[d] = new Button(composite2, SWT.CHECK);
-						btnCheck[d].setBounds(10, 10 + (d * 20), 93, 16);
+						btnCheck[d] = new Button(composite2,  SWT.CHECK);
+						
+						int rs = (d+1)%3;
+						if(rs==1){
+							x=10;
+						}else if(rs==2){
+							x = 120;
+						}else{
+							x = 230;
+						}
+						
+						btnCheck[d].setLocation(x, 10 + (y * 30));
+						btnCheck[d].setSize(90, 20);
 						btnCheck[d].setText(tables[d]);
+						composite2.setLocation(10, 280);
+						
+						composite2.setSize(composite2.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+						
+						if((d+1)%3 == 0){
+							y++;
+						}
 					}
+					lblNewLabel.setImage(SWTResourceManager.getImage(JumpView.class, "/org/eclipse/jface/dialogs/images/message_info.gif"));
 					lblInfo.setText("Connection Success.");
 				}
-				else lblInfo.setText("Connection Failed.");
+				
+				else{
+					lblNewLabel.setImage(SWTResourceManager.getImage(JumpView.class, "/org/eclipse/jface/dialogs/images/message_error.gif"));
+					lblInfo.setText("Connection Failed.");
+				}
 				System.out.println("second check children.");
 				for (Control c1 : c) {
 					System.out.println(c1.toString());
 				}
 			}
 		});
-		btnConnect.setBounds(416, 125, 75, 25);
+		
+		btnConnect.setBounds(349, 178, 75, 25);
 		btnConnect.setText("Connect");
 		
 		txtDatabase = new Text(parent, SWT.BORDER);
 		txtDatabase.setText("jdbc:mysql://<host>:3306/<database>");
-		txtDatabase.setBounds(149, 64, 252, 21);
-		
-		Label lblDatabaseName = new Label(parent, SWT.NONE);
-		lblDatabaseName.setText("Connection String");
-		lblDatabaseName.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		lblDatabaseName.setBounds(22, 67, 101, 18);
+		txtDatabase.setBounds(10, 80, 333, 21);
 		
 		txtUser = new Text(parent, SWT.BORDER);
-		txtUser.setBounds(149, 94, 252, 21);
-		
-		Label lblDatabaseUser = new Label(parent, SWT.NONE);
-		lblDatabaseUser.setText("Database User");
-		lblDatabaseUser.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		lblDatabaseUser.setBounds(22, 97, 75, 15);
+		txtUser.setBounds(10, 130, 333, 21);
 		
 		txtPass = new Text(parent, SWT.BORDER | SWT.PASSWORD);
 		txtPass.setTouchEnabled(true);
-		txtPass.setBounds(149, 127, 252, 21);
+		txtPass.setBounds(10, 180, 333, 21);
+		
+		
+		txtLocation = new Text(parent, SWT.BORDER);
+		txtLocation.setBounds(10, 230, 333, 21);
+		
+		Label lblDatabaseName = new Label(parent, SWT.NONE);
+		lblDatabaseName.setText("Connection String:");
+		lblDatabaseName.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+		lblDatabaseName.setBounds(10, 60, 101, 18);
+		
+		Label lblDatabaseUser = new Label(parent, SWT.NONE);
+		lblDatabaseUser.setText("Database User:");
+		lblDatabaseUser.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+		lblDatabaseUser.setBounds(10, 110, 91, 15);
 		
 		Label lblDatabasePassword = new Label(parent, SWT.NONE);
-		lblDatabasePassword.setText("Database Password");
+		lblDatabasePassword.setText("Database Password:");
 		lblDatabasePassword.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		lblDatabasePassword.setBounds(22, 130, 101, 15);
+		lblDatabasePassword.setBounds(10, 160, 121, 15);
 		
 		lblInfo = new Label(parent, SWT.WRAP);
-		lblInfo.setForeground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		lblInfo.setBackground(SWTResourceManager.getColor(SWT.COLOR_DARK_GREEN));
-		lblInfo.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD));
-		lblInfo.setBounds(68, 400, 386, 106);
+		lblInfo.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
+		lblInfo.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+		lblInfo.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NONE));
+		lblInfo.setBounds(30, 32, 527, 24);
 		
 		Button btnGenerate = new Button(parent, SWT.NONE);
-		btnGenerate.setBounds(416, 330, 75, 25);
+		btnGenerate.setBounds(349, 341, 75, 25);
 		btnGenerate.setText("Generate");
 		btnGenerate.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -155,35 +194,32 @@ public class JumpView extends ViewPart {
 							//create new hibernate.cfg.xml
 							CreateProject.createHibernateConfig(txtLocation.getText());
 							
-							lblInfo.setText(textInfo+" has been generated.");
+							//lblInfo.setText(textInfo+" has been generated.");
+							lblNewLabel.setImage(SWTResourceManager.getImage(JumpView.class, "/org/eclipse/jface/dialogs/images/message_info.gif"));
+							lblInfo.setText("CRUD codes has been generated.");
 						}else{
+							lblNewLabel.setImage(SWTResourceManager.getImage(JumpView.class, "/org/eclipse/jface/dialogs/images/message_error.gif"));
 							lblInfo.setText("Connection Failed.");
 						}
 						
 					}else{
+						lblNewLabel.setImage(SWTResourceManager.getImage(JumpView.class, "/org/eclipse/jface/dialogs/images/message_error.gif"));
 						lblInfo.setText("Generation Failed.");
 					}
 					FileUtil.deleteFile(locationPath+"\\template.zip");
 					FileUtil.deleteDirectory(locationPath+"\\template");
 					
 				}
-				else lblInfo.setText(txtLocation.getText()+"Wrong project location.");
+				else{
+					lblNewLabel.setImage(SWTResourceManager.getImage(JumpView.class, "/org/eclipse/jface/dialogs/images/message_error.gif"));
+					lblInfo.setText(txtLocation.getText()+"Wrong project location.");
+				}
 			}
 		});
 		
-		
-		txtLocation = new Text(parent, SWT.BORDER);
-		txtLocation.setBounds(149, 181, 252, 21);
-		
-		Label lblTable = new Label(parent, SWT.NONE);
-		lblTable.setText("Select Table");
-		lblTable.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		lblTable.setAlignment(SWT.CENTER);
-		lblTable.setBounds(22, 212, 68, 15);
-		
 		Label lblProjectLocation = new Label(parent, SWT.NONE);
 		lblProjectLocation.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		lblProjectLocation.setBounds(22, 184, 100, 15);
+		lblProjectLocation.setBounds(10, 210, 100, 15);
 		lblProjectLocation.setText("Project Location");
 		
 		Button btnBrowse = new Button(parent, SWT.NONE);
@@ -193,7 +229,7 @@ public class JumpView extends ViewPart {
 				//TODO
 			}
 		});
-		btnBrowse.setBounds(416, 179, 75, 25);
+		btnBrowse.setBounds(349, 228, 75, 25);
 		btnBrowse.setText("Browse...");
 		
 		btnBrowse.addListener(SWT.Selection, new Listener() {
@@ -212,7 +248,7 @@ public class JumpView extends ViewPart {
 		});
 		
 		btnSelectAllTable = new Button(parent, SWT.NONE);
-		btnSelectAllTable.setBounds(416, 207, 91, 25);
+		btnSelectAllTable.setBounds(349, 280, 91, 25);
 		btnSelectAllTable.setText("Select all tables");
 		btnSelectAllTable.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -226,8 +262,18 @@ public class JumpView extends ViewPart {
 		});
 		
 		btnUnSelectAll = new Button(parent, SWT.NONE);
-		btnUnSelectAll.setBounds(416, 236, 109, 25);
+		btnUnSelectAll.setBounds(349, 310, 109, 25);
 		btnUnSelectAll.setText("Unselect all tables");
+		
+		label = new Label(parent, SWT.NONE);
+		label.setText("Project Location");
+		label.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+		label.setBounds(11, 260, 100, 15);
+		
+		lblNewLabel = new Label(parent, SWT.NONE);
+		
+		lblNewLabel.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+		lblNewLabel.setBounds(10, 30, 20, 24);
 		btnUnSelectAll.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

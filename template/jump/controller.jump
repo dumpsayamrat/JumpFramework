@@ -48,13 +48,13 @@ public class ${nameCapitalize}Controller {
 	}
 
 	@RequestMapping("/${nameLowerCase}/{id}/delete")
-	public String delete(@PathVariable("id") int id){
+	public String delete(@PathVariable("id") ${typePrimaryKey} id){
 		${nameLowerCase}Service.delete(id);
 		return "redirect:/${nameLowerCase}";
 	}
 
 	@RequestMapping("/${nameLowerCase}/{id}/update")
-	public String edit(@PathVariable("id") int id, Map<String, Object> map){
+	public String edit(@PathVariable("id") ${typePrimaryKey} id, Map<String, Object> map){
 		String title = "${nameCapitalize} | Update";
 		map.put("title", title);
 		${loopForiegnList}
