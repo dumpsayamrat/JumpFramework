@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -34,8 +36,8 @@ public class CreateProject {
 		{},
 		{"log4j.xml"},
 		{"Theme"},
-		{"web.xml", "jumpweb-servlet.xml"},
-		{"includes.jsp", "index.jsp", "about.jsp", "contact.jsp"},
+		{"web.xml", "servlet.xml"},
+		{"header.jsp", "index.jsp", "about.jsp", "contact.jsp", "footer.jsp"},
 		{"WelcomeController.java"}
 	};
 	
@@ -65,8 +67,7 @@ public class CreateProject {
 	 * @return true if success.
 	 */
 	public static boolean createProject(String projectPath, String connection, String user, String pass){
-		InputSteamToFileApp in = new InputSteamToFileApp();
-		in.extactFileTemplate(projectPath);
+		
 		for(int i=0;i<DIR.length;i++){
 			 String path = projectPath+subProjectPath[i];
 			 System.out.println("This is projectPath-> " + path);
@@ -91,7 +92,23 @@ public class CreateProject {
 					
 				if(!checkName.contains(FILE[i][j])){
 					try {
-						FileUtil.copyFile((FILE[i][j]), path, projectPath);
+						
+						switch (FILE[i][j]) {
+						case "build.gradle":
+							createFileTemplate(projectPath, path, "build", "gradle", "build.gradle");
+							break;
+						case "web.xml":
+							createFileTemplate(projectPath, path, "web", "xml", "web.xml");
+							break;
+						case "servlet.xml":
+							String[] tmp = projectPath.split("\\\\");
+							String projectName = tmp[tmp.length-1];
+							createFileTemplate(projectPath, path, projectName.toLowerCase()+"-servlet", "xml", "servlet.xml");
+							break;
+						default:
+							FileUtil.copyFile((FILE[i][j]), path, projectPath);
+							break;
+						}
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -101,13 +118,44 @@ public class CreateProject {
 					System.out.println(FILE[i][j]+" is exists.");
 				}					
 			 }
-		 }	
-		FileUtil.deleteFile(projectPath+"\\template.zip");
-		FileUtil.deleteDirectory(projectPath+"\\template");
+		 }
 		createJdbc(projectPath,connection, user, pass);
 			
 		return true;
 		
+	}
+
+
+	/**
+	 * create file by template
+	 * 
+	 * @param projectPath use for get project's name
+	 * @param path use for create file
+	 * @param fileName
+	 * @param type
+	 * @param typeOfTemplate
+	 */
+	private static void createFileTemplate(String projectPath, String path, String fileName, String type, String typeOfTemplate) {
+		fu = new FileUtil();
+		File file = fu.createFile(fileName, path+"\\", type);
+		
+		String[] tmp = projectPath.split("\\\\");
+		String projectName = tmp[tmp.length-1];
+		
+		Map<String, String> param = new HashMap<>();		
+		param.put("projectName", projectName);
+		param.put("servletName", projectName.toLowerCase());
+		
+		try { 
+			FileWriter fw = new FileWriter(file);
+			String content = fu.writeAsTemplate(projectPath, param, typeOfTemplate);
+			fw.write(content);
+			fw.flush();
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
 	}
 
 
@@ -169,7 +217,7 @@ public class CreateProject {
 			
 			fw.write("jdbc.driverClassName=com.mysql.jdbc.Driver\n");
 			fw.write("jdbc.dialect=org.hibernate.dialect.MySQLDialect\n");
-			fw.write("jdbc.databaseurl="+connection+"\n");
+			fw.write("jdbc.databaseurl="+connection+"?characterEncoding=UTF-8\n");
 			fw.write("jdbc.username="+user+"\n");
 			fw.write("jdbc.password="+pass);
 			

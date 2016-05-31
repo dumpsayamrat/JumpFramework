@@ -1,0 +1,50 @@
+package com.spring.repository;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.spring.dao.${nameCapitalize}Dao;
+import com.spring.model.${modelName};
+import com.spring.service.${nameCapitalize}Service;
+
+@Service
+public class ${nameCapitalize}ServiceImpl implements ${nameCapitalize}Service {
+
+	@Autowired
+	private ${nameCapitalize}Dao ${nameLowerCase}Dao;
+
+	@Transactional
+	public void add(${modelName} ${nameLowerCase}) {
+		${nameLowerCase}Dao.add(${nameLowerCase});
+	}
+
+	@Transactional
+	public void edit(${modelName} ${nameLowerCase}) {
+		${nameLowerCase}Dao.edit(${nameLowerCase});
+	}
+
+	@Transactional
+	public void delete(${typePrimaryKey} ${nameLowerCase}Id) {
+		${nameLowerCase}Dao.delete(${nameLowerCase}Id);
+	}
+
+	@Transactional
+	public ${modelName} get${modelName}(${typePrimaryKey} ${nameLowerCase}Id) {
+		return ${nameLowerCase}Dao.get${nameCapitalize}(${nameLowerCase}Id);
+	}
+
+	@Transactional
+	public List getAll${nameCapitalize}() {
+		return ${nameLowerCase}Dao.getAll${nameCapitalize}();
+	}
+
+	@Transactional
+	public List getSearch(${modelName} ${nameLowerCase}) {
+		return ${nameLowerCase}Dao.getSearch(${nameLowerCase});
+	}
+
+}

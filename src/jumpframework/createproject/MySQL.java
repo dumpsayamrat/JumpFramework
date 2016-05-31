@@ -63,6 +63,8 @@ public class MySQL {
 	 * field data
 	 * @param tableName
 	 * @return fields  fields[i][0] = field's name, fields[i][1] = field's type, fields[i][2] = is_autoincrement
+	 * 									,field[i][3] = is_primary, fields[i][4] = is_foreign, fields[i][5] = foreignField
+	 * 									,field[i][6] = foreignPrimary
 	 */
 	public String[][] getFields(String tableName){
 		ArrayList<String> tmpField = new ArrayList<String>();
@@ -70,18 +72,62 @@ public class MySQL {
 		try{
 			DatabaseMetaData md = connect.getMetaData();
 			ResultSet rs = md.getColumns(null, null, tableName, null);
+			
+			
 			while (rs.next()) {
-				tmpField.add(rs.getString(4)+","
-							+getDataType().get(Integer.parseInt(rs.getString(5)))+","
-							+rs.getString(23));
+				ResultSet rsPrimary = md.getPrimaryKeys(null, null, tableName);
+				ResultSet rsImported = md.getImportedKeys(null, null, tableName);
+				String name = rs.getString(4);
+				String type = getDataType().get(Integer.parseInt(rs.getString(5)));
+				String is_auto = rs.getString(23);
+				String is_primary = "NO";
+				String is_foreign = "NO";
+				String foreignField = "NO";
+				String foreignPrimary = "NO";
+				while(rsPrimary.next()){
+					if(name.equals(rsPrimary.getString(4))){
+						is_primary = "YES";
+					}
+				}
 				
+				
+				
+				while(rsImported.next()){				
+
+					ResultSet rsForeignColumn = md.getColumns(null, null, rsImported.getString(3), null);
+					ResultSet rsForeignPrimary = md.getPrimaryKeys(null, null, rsImported.getString(3));
+					if(name.equals(rsImported.getString(8))){
+						int j=0;
+						while(rsForeignColumn.next()&&j<2){
+							foreignField = rsForeignColumn.getString(4);
+							j++;
+						}
+						while(rsForeignPrimary.next()){
+							foreignPrimary = rsForeignPrimary.getString(4);
+						}
+						is_foreign = rsImported.getString(3);
+					}
+				}
+				
+				tmpField.add(name+","
+							+type+","
+							+is_auto+","
+							+is_primary+","
+							+is_foreign+","
+							+foreignField+","
+							+foreignPrimary);
 			}
-			fields = new String[tmpField.size()][3];
+			
+			fields = new String[tmpField.size()][7];
 			for(int i=0; i<fields.length; i++){	
 				String[] tmp = tmpField.get(i).split(",");
 				fields[i][0] = tmp[0];
 				fields[i][1] = tmp[1];
 				fields[i][2] = tmp[2];
+				fields[i][3] = tmp[3];
+				fields[i][4] = tmp[4];
+				fields[i][5] = tmp[5];
+				fields[i][6] = tmp[6];
 			}
 			
 		}catch (SQLException e) {

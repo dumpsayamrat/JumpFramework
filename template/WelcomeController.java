@@ -10,7 +10,9 @@ public class WelcomeController {
 	@RequestMapping(value = "/")
 	public ModelAndView index(){
 		
-		ModelAndView model = new ModelAndView("index");		
+		ModelAndView model = new ModelAndView("index");
+		String title = "Home";
+		model.addObject("title", title);
 		return model;
 		
 	}
@@ -18,7 +20,9 @@ public class WelcomeController {
 	@RequestMapping(value = "/about")
 	public ModelAndView about(){
 		
-		ModelAndView model = new ModelAndView("about");		
+		ModelAndView model = new ModelAndView("about");
+		String title = "About";
+		model.addObject("title", title);
 		return model;
 		
 	}
@@ -26,7 +30,9 @@ public class WelcomeController {
 	@RequestMapping(value = "/contact")
 	public ModelAndView contact(){
 		
-		ModelAndView model = new ModelAndView("contact");		
+		ModelAndView model = new ModelAndView("contact");
+		String title = "Contact";
+		model.addObject("title", title);
 		return model;
 		
 	}

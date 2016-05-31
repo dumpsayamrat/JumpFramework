@@ -10,8 +10,8 @@ import java.util.zip.ZipFile;
 public class InputSteamToFileApp  {
 	
 	/**
-	 * 
-	 * @param projectPath
+	 * extact template.zip
+	 * @param projectPath location of web project.
 	 */
 	public void extactFileTemplate(String projectPath){
 		InputStream inputStream = null;

@@ -1,0 +1,60 @@
+package com.spring.repository;
+
+import java.util.List;
+import java.util.Map;
+
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.LogicalExpression;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.hibernate.criterion.Example;
+import org.hibernate.criterion.MatchMode;
+
+import com.spring.dao.${nameCapitalize}Dao;
+import com.spring.model.${modelName};
+
+@Repository
+public class ${nameCapitalize}DaoImpl implements ${nameCapitalize}Dao {
+
+	@Autowired
+	private SessionFactory session;
+
+	@Override
+	public void add(${modelName} ${nameLowerCase}) {
+		session.getCurrentSession().save(${nameLowerCase});
+	}
+
+	@Override
+	public void edit(${modelName} ${nameLowerCase}) {
+		session.getCurrentSession().update(${nameLowerCase});
+	}
+
+	@Override
+	public void delete(${typePrimaryKey} ${nameLowerCase}Id) {
+		session.getCurrentSession().delete(get${nameCapitalize}(${nameLowerCase}Id));
+	}
+
+	@Override
+	public ${modelName} get${nameCapitalize}(${typePrimaryKey} ${nameLowerCase}Id) {
+		return (${modelName}) session.getCurrentSession().get(${modelName}.class, ${nameLowerCase}Id);
+	}
+
+	@Override
+	public List getAll${nameCapitalize}() {
+		return session.getCurrentSession().createQuery("from ${modelName}").list();
+	}
+
+	@Override
+	public List getSearch(${modelName} ${nameLowerCase}) {
+		return session.getCurrentSession().
+				createCriteria(${modelName}.class).add(Example.create(${nameLowerCase}).enableLike(MatchMode.ANYWHERE))
+				${loopMapSearch}
+				.list();
+	}
+
+}
