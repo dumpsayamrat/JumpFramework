@@ -56,5 +56,7 @@ public class ${nameCapitalize}DaoImpl implements ${nameCapitalize}Dao {
 				${loopMapSearch}
 				.list();
 	}
+	
+	${daoimpl}
 
 }

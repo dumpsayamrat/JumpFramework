@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-
 import org.apache.commons.lang3.text.WordUtils;
 
 
@@ -187,6 +185,18 @@ public class Write {
 			case "loopImportService":
 				sCurrentLine = loopImportService(sCurrentLine);
 				break;
+			case "loginout":
+				sCurrentLine = loginout(sCurrentLine);
+				break;
+			case "servicedao":
+				sCurrentLine = servicedao(sCurrentLine);
+				break;
+			case "serviceimpl":
+				sCurrentLine = serviceImpl(sCurrentLine);
+				break;
+			case "daoimpl":
+				sCurrentLine = daoImpl(sCurrentLine);
+				break;
 			default:
 				if(mapNameProperties.containsKey(nameProperty)){
 					sCurrentLine = sCurrentLine.replace("${"+nameProperty+"}", mapNameProperties.get(nameProperty) );
@@ -201,6 +211,82 @@ public class Write {
 		return sCurrentLine;
 	}
 
+
+	private String daoImpl(String sCurrentLine) {
+		sCurrentLine = "";
+		if(tableName.equals("juser")){
+			
+			sCurrentLine += wT(1)+"@Override\n";
+			sCurrentLine += wT(1)+"public Juser doLogin(String username, String password) {\n";
+			sCurrentLine += wT(2)+"Criteria criteria = session.getCurrentSession().createCriteria(Juser.class);\n";
+			sCurrentLine += wT(2)+"criteria.add(Restrictions.eq(\"username\", username));\n";
+			sCurrentLine += wT(2)+"criteria.add(Restrictions.eq(\"password\", password));\n";
+			sCurrentLine += wT(2)+"return (Juser) criteria.uniqueResult();\n";
+			sCurrentLine += wT(1)+"}\n";
+			
+			
+			return sCurrentLine;
+		}else{
+			return sCurrentLine;
+		}
+	}
+
+	private String serviceImpl(String sCurrentLine) {
+		sCurrentLine = "";
+		if(tableName.equals("juser")){
+			
+			sCurrentLine += wT(1)+"@Transactional\n";
+			sCurrentLine += wT(1)+"public Juser doLogin(String code, String password) {\n";
+			sCurrentLine += wT(2)+"return juserDao.doLogin(code, password);\n";
+			sCurrentLine += wT(1)+"}\n";
+			return sCurrentLine;
+		}else{
+			return sCurrentLine;
+		}
+	}
+
+	private String servicedao(String sCurrentLine) {
+		sCurrentLine = "";
+		if(tableName.equals("juser")){
+			
+			sCurrentLine += wT(1)+"public Juser doLogin(String code, String password);\n";
+			
+			return sCurrentLine;
+		}else{
+			return sCurrentLine;
+		}
+	}
+
+	private String loginout(String sCurrentLine) {
+		sCurrentLine = "";
+		if(tableName.equals("juser")){
+			
+			sCurrentLine += wT(1)+"@RequestMapping(value = \"/login.do\", method = RequestMethod.POST)\n";
+			sCurrentLine += wT(6)+"public String doLogin(HttpSession session, @RequestParam(\"username\") String username, @RequestParam(\"password\") String password){\n";
+				
+			sCurrentLine += wT(2)+"Juser juser = juserService.doLogin(username, password);\n";
+			sCurrentLine += wT(2)+"if(juser != null){\n";
+			sCurrentLine += wT(3)+"session.setAttribute(\"name\", juser.getUsername());\n";
+			sCurrentLine += wT(3)+"session.setAttribute(\"id\", juser.getId());\n";
+			sCurrentLine += wT(3)+"return \"redirect:/\";\n";
+			sCurrentLine += wT(2)+"}else{\n";
+			sCurrentLine += wT(3)+"return \"redirect:/\";\n";
+			sCurrentLine += wT(2)+"}\n";
+			sCurrentLine += wT(1)+"}\n";
+			
+			
+			sCurrentLine += wT(1)+"@RequestMapping(value = \"/logout.do\", method = RequestMethod.GET)\n";
+			sCurrentLine += wT(1)+"public String doLogin(HttpSession session){\n";
+			sCurrentLine += wT(2)+"session.invalidate();\n";	
+			sCurrentLine += wT(2)+"return \"redirect:/\";\n";
+			sCurrentLine += wT(1)+"};\n";
+			
+			return sCurrentLine;
+		}else{
+			return sCurrentLine;
+		}
+		
+	}
 
 	private String loopImportService(String sCurrentLine) {
 		sCurrentLine = "";

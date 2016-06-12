@@ -46,5 +46,7 @@ public class ${nameCapitalize}ServiceImpl implements ${nameCapitalize}Service {
 	public List getSearch(${modelName} ${nameLowerCase}) {
 		return ${nameLowerCase}Dao.getSearch(${nameLowerCase});
 	}
+	
+	${serviceimpl}
 
 }

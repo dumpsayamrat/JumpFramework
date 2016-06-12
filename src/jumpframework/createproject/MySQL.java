@@ -12,10 +12,14 @@ public class MySQL {
 
 	private Connection connect = null;
 
-	public MySQL(String connection, String user, String pass) {
+	public MySQL(String connection, String user, String pass, String database) {
 
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			if(database.equals("mysql")){
+				Class.forName("com.mysql.jdbc.Driver");
+			}else{
+				Class.forName("org.postgresql.Driver");				
+			}
 			connect = DriverManager
 					.getConnection(connection + "?user=" + user + "&password=" + pass);
 		} catch (Exception e) {
@@ -24,8 +28,15 @@ public class MySQL {
 		}
 
 	}
+	
+	public Connection getConnection() {
+		if (connect != null)
+			return connect;
+		else
+			return null;
+	}
 
-	public boolean getConnection() {
+	public boolean getIsConnection() {
 		if (connect != null)
 			return true;
 		else
@@ -48,9 +59,10 @@ public class MySQL {
 		
 		try{
 			DatabaseMetaData md = connect.getMetaData();
-			ResultSet rs = md.getTables(null, null, "%", null);
+			ResultSet rs = md.getTables(null, null, "%", new String[] { "TABLE" });
 			while (rs.next()) {
 				tmp.add(rs.getString(3));
+				//System.out.println(rs.getString(3));
 			}
 		}catch (SQLException e) {
             e.printStackTrace();
@@ -131,7 +143,7 @@ public class MySQL {
 			}
 			
 		}catch (SQLException e) {
-			System.out.println(e.getMessage());
+			//System.out.println(e.getMessage());
             e.printStackTrace();
         }
 		

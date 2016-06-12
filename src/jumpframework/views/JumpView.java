@@ -27,8 +27,9 @@ public class JumpView extends ViewPart {
 	private MySQL mysql;
 	private Text txtLocation;
 	private Button[] btnCheck;
+	private Button btnCheckButton;
 	private Button btnSelectAllTable;
-	private Button btnUnSelectAll;
+	private Button btnUnSelectAll, btnMySql, btnPostgres;
 	
 	Writer writer;
 	
@@ -58,9 +59,35 @@ public class JumpView extends ViewPart {
 		//scrolledComposite.setSize(252, 147);
 		composite2 = new Composite(parent, SWT.NONE);
 		composite2.setBackground(getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
-		composite2.setBounds(10, 280, 333, 147);
+		composite2.setBounds(10, 312, 333, 147);
 		//composite2.
 		composite2.setEnabled(true);
+		
+		txtDatabase = new Text(parent, SWT.BORDER);
+		txtDatabase.setBounds(10, 80, 333, 21);
+		
+		btnMySql = new Button(parent, SWT.RADIO);
+		btnMySql.setText("MySQL");
+		btnMySql.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				txtDatabase.setText("jdbc:mysql://<host>:3306/<database>");
+			}
+		});
+		btnMySql.setBounds(148, 60, 59, 16);
+		
+		btnPostgres = new Button(parent, SWT.RADIO);
+		btnPostgres.setText("PostgreSQL");
+		btnPostgres.setBounds(213, 60, 90, 16);
+		btnPostgres.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				txtDatabase.setText("jdbc:postgresql://<host>:5432/<database>");
+			}
+		});
+		
+		txtDatabase.setText("jdbc:mysql://<host>:3306/<database>");
+		btnMySql.setSelection(true);
 		
 		
 		
@@ -75,8 +102,13 @@ public class JumpView extends ViewPart {
 					System.out.println(c1.toString());
 					c1.dispose();
 				}
-				mysql = new MySQL(txtDatabase.getText(), txtUser.getText(), txtPass.getText());
-				if (mysql.getConnection()){
+				String database = "postgresql";
+				
+				if(btnMySql.getSelection()){
+					database = "mysql";
+				}
+				mysql = new MySQL(txtDatabase.getText(), txtUser.getText(), txtPass.getText(), database);
+				if (mysql.getIsConnection()){
 					String[] tables = mysql.getTablesName();					
 					btnCheck = new Button[tables.length];
 					int y = 0;
@@ -121,11 +153,7 @@ public class JumpView extends ViewPart {
 		});
 		
 		btnConnect.setBounds(349, 178, 75, 25);
-		btnConnect.setText("Connect");
-		
-		txtDatabase = new Text(parent, SWT.BORDER);
-		txtDatabase.setText("jdbc:mysql://<host>:3306/<database>");
-		txtDatabase.setBounds(10, 80, 333, 21);
+		btnConnect.setText("Connect");		
 		
 		txtUser = new Text(parent, SWT.BORDER);
 		txtUser.setBounds(10, 130, 333, 21);
@@ -160,7 +188,7 @@ public class JumpView extends ViewPart {
 		lblInfo.setBounds(30, 32, 527, 24);
 		
 		Button btnGenerate = new Button(parent, SWT.NONE);
-		btnGenerate.setBounds(349, 341, 75, 25);
+		btnGenerate.setBounds(349, 374, 75, 25);
 		btnGenerate.setText("Generate");
 		btnGenerate.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -170,14 +198,37 @@ public class JumpView extends ViewPart {
 				if(FileUtil.checkLocation(locationPath)){
 					InputSteamToFileApp in = new InputSteamToFileApp();
 					in.extactFileTemplate(locationPath);
-					boolean isCreated = CreateProject.createProject(locationPath,txtDatabase.getText(), txtUser.getText(), txtPass.getText());
 					
-					if(isCreated){
+					String connectionString = txtDatabase.getText();
+					String username = txtUser.getText();
+					String password = txtPass.getText();
+					
+					String database = "postgresql";
+					
+					if(btnMySql.getSelection()){
+						database = "mysql";
+					}
+					
+					boolean isCreated = CreateProject.createProject(locationPath, connectionString, username, password, database);
+					
+					if(isCreated){					
 						
-						mysql = new MySQL(txtDatabase.getText(), txtUser.getText(), txtPass.getText());
-						if (mysql.getConnection()){					
+						
+						mysql = new MySQL(txtDatabase.getText(), txtUser.getText(), txtPass.getText(), database);
+						if (mysql.getIsConnection()){
 							String textInfo = "";
-							for (int d = 0; d < btnCheck.length; d++) {								
+							
+							if(btnCheckButton.getSelection()){
+								CreateProject.createJUser("juser", mysql, database);
+								writer = new Writer("juser", "model", locationPath, mysql);
+								writer = new Writer("juser", "dao", locationPath, mysql);
+								writer = new Writer("juser", "service", locationPath, mysql);
+								writer = new Writer("juser", "repository", locationPath, mysql);
+								writer = new Writer("juser", "controller", locationPath, mysql);
+								writer = new Writer("juser", "view", locationPath, mysql);
+							}
+							
+							for (int d = 0; d < btnCheck.length; d++) {
 								if(btnCheck[d].getSelection()){
 									String tableName = btnCheck[d].getText();
 									writer = new Writer(tableName, "model", locationPath, mysql);
@@ -188,7 +239,7 @@ public class JumpView extends ViewPart {
 									writer = new Writer(tableName, "view", locationPath, mysql);
 									
 									textInfo += tableName+", ";
-								}							
+								}
 							}
 							
 							//create new hibernate.cfg.xml
@@ -197,6 +248,8 @@ public class JumpView extends ViewPart {
 							//lblInfo.setText(textInfo+" has been generated.");
 							lblNewLabel.setImage(SWTResourceManager.getImage(JumpView.class, "/org/eclipse/jface/dialogs/images/message_info.gif"));
 							lblInfo.setText("CRUD codes has been generated.");
+							
+							mysql.close();
 						}else{
 							lblNewLabel.setImage(SWTResourceManager.getImage(JumpView.class, "/org/eclipse/jface/dialogs/images/message_error.gif"));
 							lblInfo.setText("Connection Failed.");
@@ -223,12 +276,7 @@ public class JumpView extends ViewPart {
 		lblProjectLocation.setText("Project Location");
 		
 		Button btnBrowse = new Button(parent, SWT.NONE);
-		btnBrowse.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				//TODO
-			}
-		});
+		
 		btnBrowse.setBounds(349, 228, 75, 25);
 		btnBrowse.setText("Browse...");
 		
@@ -248,7 +296,7 @@ public class JumpView extends ViewPart {
 		});
 		
 		btnSelectAllTable = new Button(parent, SWT.NONE);
-		btnSelectAllTable.setBounds(349, 280, 91, 25);
+		btnSelectAllTable.setBounds(349, 312, 91, 25);
 		btnSelectAllTable.setText("Select all tables");
 		btnSelectAllTable.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -262,18 +310,28 @@ public class JumpView extends ViewPart {
 		});
 		
 		btnUnSelectAll = new Button(parent, SWT.NONE);
-		btnUnSelectAll.setBounds(349, 310, 109, 25);
+		btnUnSelectAll.setBounds(349, 343, 109, 25);
 		btnUnSelectAll.setText("Unselect all tables");
 		
 		label = new Label(parent, SWT.NONE);
 		label.setText("Project Location");
 		label.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		label.setBounds(11, 260, 100, 15);
+		label.setBounds(10, 291, 100, 15);
 		
 		lblNewLabel = new Label(parent, SWT.NONE);
 		
 		lblNewLabel.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		lblNewLabel.setBounds(10, 30, 20, 24);
+		
+		btnCheckButton = new Button(parent, SWT.CHECK);
+		btnCheckButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+			}
+		});
+		btnCheckButton.setBounds(10, 267, 109, 16);
+		btnCheckButton.setText("Authentication");
+		
 		btnUnSelectAll.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

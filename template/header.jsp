@@ -39,6 +39,9 @@ pageEncoding="UTF-8"%>
 				<ul class="nav navbar-nav">
 					<li><a href="<c:url value='/about' />">About</a></li>
 					<li><a href="<c:url value='/contact' />">Contact</a></li>
+					<c:if test="${sessionScope.name != null }">
+						<li><a href="<c:url value='/logout.do' />">Logout (${sessionScope.name })</a></li>
+					</c:if>
 				</ul>
 			</div>
 		</div>

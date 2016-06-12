@@ -3,6 +3,8 @@ package jumpframework.createproject;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -64,9 +66,10 @@ public class CreateProject {
 	 * @param connection Connection String for create jdbc.properties.
 	 * @param user database user for create jdbc.properties. 
 	 * @param pass database password for create jdbc.properties.
+	 * @param database 
 	 * @return true if success.
 	 */
-	public static boolean createProject(String projectPath, String connection, String user, String pass){
+	public static boolean createProject(String projectPath, String connection, String user, String pass, String database){
 		
 		for(int i=0;i<DIR.length;i++){
 			 String path = projectPath+subProjectPath[i];
@@ -119,7 +122,7 @@ public class CreateProject {
 				}					
 			 }
 		 }
-		createJdbc(projectPath,connection, user, pass);
+		createJdbc(projectPath,connection, user, pass, database);
 			
 		return true;
 		
@@ -207,15 +210,22 @@ public class CreateProject {
 	 * @param connection Connection String for create jdbc.properties.
 	 * @param user database user for create jdbc.properties. 
 	 * @param pass database password for create jdbc.properties.
+	 * @param database 
 	 */
-	private static void createJdbc(String projectPath, String connection, String user, String pass) {
+	private static void createJdbc(String projectPath, String connection, String user, String pass, String database) {
 		fu = new FileUtil();
 		File file = fu.createFile("jdbc", projectPath+"\\src\\main\\webapp\\WEB-INF\\", "properties");
+		String driverClass = "";
+		if(database.equals("mysql")){
+			driverClass = "com.mysql.jdbc.Driver";
+		}else{
+			driverClass = "org.postgresql.Driver";			
+		}
 		
 		try {
 			FileWriter fw = new FileWriter(file);
 			
-			fw.write("jdbc.driverClassName=com.mysql.jdbc.Driver\n");
+			fw.write("jdbc.driverClassName="+driverClass+"\n");
 			fw.write("jdbc.dialect=org.hibernate.dialect.MySQLDialect\n");
 			fw.write("jdbc.databaseurl="+connection+"?characterEncoding=UTF-8\n");
 			fw.write("jdbc.username="+user+"\n");
@@ -224,6 +234,32 @@ public class CreateProject {
 			fw.flush();
 			fw.close();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+
+	public static void createJUser(String string, MySQL mysql, String database) {
+		
+		Statement stmt = null;
+		try {
+			stmt = mysql.getConnection().createStatement();
+			
+			String sql = "CREATE TABLE juser " +
+	                   "(id INTEGER not NULL AUTO_INCREMENT, " +
+	                   " username VARCHAR(255), " + 
+	                   " password VARCHAR(255), " +
+	                   " PRIMARY KEY ( id ))";
+			if(database.equals("postgresql")){
+				sql = "CREATE TABLE juser " +
+	                   "(id SERIAL PRIMARY KEY, " +
+	                   " username TEXT, " + 
+	                   " password TEXT)";
+			}
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

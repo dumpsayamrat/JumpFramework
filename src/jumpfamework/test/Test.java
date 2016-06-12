@@ -2,7 +2,6 @@ package jumpfamework.test;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.commons.lang3.text.WordUtils;
 
 import jumpframework.createproject.MySQL;
@@ -12,14 +11,15 @@ public class Test {
 	
 	public static void main(String[] args) {
 		
-		MySQL mySql = new MySQL("jdbc:mysql://localhost/employee", "spring", "1234");
-		
+		MySQL mySql = new MySQL("jdbc:postgresql://localhost:5432/employee", "jee", "1234", "postgres");
+		int x = 1;
 		for (String t : mySql.getTablesName()) {
-			System.out.println(t);
+			System.out.println(x+" : "+t);
 			String[][] s = mySql.getFields(t);
 			for(int i=0;i<s.length;i++){
 				System.out.println("\t"+s[i][0]+":"+s[i][1]+":"+s[i][2]+":"+s[i][3]+":"+s[i][4]+":"+s[i][5]+":"+s[i][6]);
 			}
+			x++;
 		}
 		
 		

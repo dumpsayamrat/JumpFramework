@@ -14,5 +14,6 @@ public interface ${nameCapitalize}Dao {
 	public ${modelName} get${nameCapitalize}(${typePrimaryKey} ${nameLowerCase}Id);
 	public List getAll${nameCapitalize}();
 	public List getSearch(${modelName} ${nameLowerCase});
+	${servicedao}
 
 }
