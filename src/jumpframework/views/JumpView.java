@@ -129,7 +129,7 @@ public class JumpView extends ViewPart {
 						btnCheck[d].setLocation(x, 10 + (y * 30));
 						btnCheck[d].setSize(90, 20);
 						btnCheck[d].setText(tables[d]);
-						composite2.setLocation(10, 280);
+						composite2.setLocation(10, 312);
 						
 						composite2.setSize(composite2.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 						
