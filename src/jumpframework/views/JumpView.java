@@ -9,6 +9,7 @@ import jumpframework.createproject.Writer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -19,7 +20,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 public class JumpView extends ViewPart {
 
 	private Label lblConfiguration,lblInfo,lblNewLabel;
-	private Composite composite2;
+	private ScrolledComposite composite2;
 	//private ScrolledComposite scrolledComposite;
 	private Text txtDatabase;
 	private Text txtUser;
@@ -72,7 +73,8 @@ public class JumpView extends ViewPart {
 		lblDatabaseName.setBounds(10, 60, 101, 18);
 		
 		txtDatabase = new Text(parent, SWT.BORDER);
-		txtDatabase.setText("jdbc:mysql://<host>:3306/<database>");
+		//txtDatabase.setText("jdbc:mysql://localhost:3306/<database>");
+		txtDatabase.setText("jdbc:mysql://localhost:3306/csystem");
 		txtDatabase.setBounds(10, 80, 333, 21);
 		
 		Label lblDatabaseUser = new Label(parent, SWT.NONE);
@@ -82,6 +84,7 @@ public class JumpView extends ViewPart {
 		
 		txtUser = new Text(parent, SWT.BORDER);
 		txtUser.setBounds(10, 130, 333, 21);
+		txtUser.setText("csystem");
 		
 		Label lblDatabasePassword = new Label(parent, SWT.NONE);
 		lblDatabasePassword.setText("Database Password:");
@@ -91,7 +94,7 @@ public class JumpView extends ViewPart {
 		txtPass = new Text(parent, SWT.BORDER | SWT.PASSWORD);
 		txtPass.setTouchEnabled(true);
 		txtPass.setBounds(10, 180, 333, 21);
-		
+		txtPass.setText("csystemofwattanapong2015");
 		
 		
 		
@@ -107,34 +110,44 @@ public class JumpView extends ViewPart {
 				}
 				mysql = new MySQL(txtDatabase.getText(), txtUser.getText(), txtPass.getText());
 				if (mysql.getConnection()){
-					String[] tables = mysql.getTablesName();					
+					
+					String[] tables = mysql.getTablesName();		
+					
+					Composite child = new Composite(composite2, SWT.NONE);
+				    child.setLayout(null);
+				    
 					btnCheck = new Button[tables.length];
 					int y = 0;
 					int x = 0;
 					for (int d = 0; d < btnCheck.length; d++) {
 						
-						btnCheck[d] = new Button(composite2,  SWT.CHECK);
+						btnCheck[d] = new Button(child,   SWT.CHECK);
 						
-						int rs = (d+1)%3;
+						x=10;
+						/*int rs = (d+1)%3;
 						if(rs==1){
 							x=10;
 						}else if(rs==2){
 							x = 120;
 						}else{
 							x = 230;
-						}
+						}*/
 						
-						btnCheck[d].setLocation(x, 10 + (y * 25));
+						btnCheck[d].setLocation(x, 10 + (y++ * 25));
 						btnCheck[d].setSize(90, 20);
 						btnCheck[d].setText(tables[d]);
-						composite2.setLocation(10, 280);
 						
-						composite2.setSize(composite2.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+						//composite2.setLocation(10, 280);
 						
-						if((d+1)%3 == 0){
+						//composite2.setSize(composite2.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+	
+						/*if((d+1)%3 == 0){
 							y++;
-						}
+						}*/
 					}
+					
+					composite2.setMinHeight(y*25+10);
+					composite2.setContent(child);
 					lblNewLabel.setImage(SWTResourceManager.getImage(JumpView.class, "/org/eclipse/jface/dialogs/images/message_info.gif"));
 					lblInfo.setText("Connection Success.");
 				}
@@ -183,10 +196,12 @@ public class JumpView extends ViewPart {
 		});
 		
 		//scrolledComposite.setSize(252, 147);
-		composite2 = new Composite(parent, SWT.NONE);
+		composite2 = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
 		composite2.setBackground(getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
 		composite2.setBounds(10, 280, 333, 147);
-		//composite2.
+		composite2.setMinSize(300,500);
+		composite2.setExpandVertical(true);
+		composite2.setExpandHorizontal(true);
 		composite2.setEnabled(true);
 		
 		btnSelectAllTable = new Button(parent, SWT.NONE);
