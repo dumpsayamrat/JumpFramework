@@ -73,8 +73,7 @@ public class JumpView extends ViewPart {
 		lblDatabaseName.setBounds(10, 60, 101, 18);
 		
 		txtDatabase = new Text(parent, SWT.BORDER);
-		//txtDatabase.setText("jdbc:mysql://localhost:3306/<database>");
-		txtDatabase.setText("jdbc:mysql://localhost:3306/csystem");
+		txtDatabase.setText("jdbc:mysql://localhost:3306/<database>");
 		txtDatabase.setBounds(10, 80, 333, 21);
 		
 		Label lblDatabaseUser = new Label(parent, SWT.NONE);
@@ -84,7 +83,7 @@ public class JumpView extends ViewPart {
 		
 		txtUser = new Text(parent, SWT.BORDER);
 		txtUser.setBounds(10, 130, 333, 21);
-		txtUser.setText("csystem");
+		txtUser.setText();
 		
 		Label lblDatabasePassword = new Label(parent, SWT.NONE);
 		lblDatabasePassword.setText("Database Password:");
@@ -94,7 +93,7 @@ public class JumpView extends ViewPart {
 		txtPass = new Text(parent, SWT.BORDER | SWT.PASSWORD);
 		txtPass.setTouchEnabled(true);
 		txtPass.setBounds(10, 180, 333, 21);
-		txtPass.setText("csystemofwattanapong2015");
+		txtPass.setText();
 		
 		
 		
